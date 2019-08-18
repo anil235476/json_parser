@@ -76,106 +76,111 @@ namespace grt {
 			return status ? SUCESS : ERR;
 		}
 
-		//bool is_call_accepted(std::string status) {
-		//	return (status == "yes");
-		//}
+		bool is_call_accepted(std::string status) {
+			return (status == "yes");
+		}
 
-		//std::string to_string(bool is_accept) {
-		//	return is_accept?"yes" : "no";
-		//}
+		std::string to_string(bool is_accept) {
+			return is_accept?"yes" : "no";
+		}
 
-		//bool is_connected_msg(std::string status) {
-		//	return (status == CONNECTED);
-		//}
+		bool is_connected_msg(std::string status) {
+			return (status == CONNECTED);
+		}
 
-		//std::string to_connection_status_str(bool status) {
-		//	return status ? CONNECTED : ERR;
-		//}
+		std::string to_connection_status_str(bool status) {
+			return status ? CONNECTED : ERR;
+		}
 
-		//std::string
-		//	get_type(std::string json) {
-		//	const auto type = get_key_value(json, TYPE);
-		//	return type;
-		//}
+		std::string
+			get_type(std::string json) {
+			const auto json_msg = json::parse(json);
+			const std::string type = json_msg[TYPE];
+			return type;
+		}
 
-		//std::string get_register_user_name(std::string json) {
-		//	const auto name = get_key_value(json, NAME);
-		//	return name;
-		//}
+		/*std::string get_register_user_name(std::string json) {
+			const auto name = get_key_value(json, NAME);
+			return name;
+		}
+*/
+		call_type to_call_type(std::string const detail) {
+			if (detail == VIDEO_CALL) return call_type::VIDEO;
+			if (detail == AUDIO_CALL) return call_type::AUDIO;
+			assert(false);
+		};
 
-		//call_type to_call_type(std::string const detail) {
-		//	if (detail == VIDEO_CALL) return call_type::VIDEO;
-		//	if (detail == AUDIO_CALL) return call_type::AUDIO;
-		//	assert(false);
-		//};
+		std::string to_string(call_type type) {
+			switch (type) {
+			case call_type::AUDIO: return AUDIO_CALL;
+			case call_type::VIDEO: return VIDEO_CALL;
+				assert(false);
+			}
+		}
 
-		//std::string to_string(call_type type) {
-		//	switch (type) {
-		//	case call_type::AUDIO: return AUDIO_CALL;
-		//	case call_type::VIDEO: return VIDEO_CALL;
-		//		assert(false);
-		//	}
-		//}
-
-		//void _parse_forwarded(std::string id, std::string forwarded_msg, parser_callback* caller) {
-		//	assert(caller);
-		//	const auto type = detail::get_type(forwarded_msg);
-		//	if (type == PEER_OFFER || type == PEER_ANS || type == PEER_ICE) {
-		//		auto to_webrtc_signalling_msg = [](const std::string type) {
-		//			if (type == PEER_OFFER) return webrtc_message_type::OFFER;
-		//			if (type == PEER_ANS) return webrtc_message_type::ANSWER;
-		//			if (type == PEER_ICE) return webrtc_message_type::ICE_CANDIDATES;
-		//			assert(false);
-		//		};
-		//		const auto msg_type = to_webrtc_signalling_msg(type);
-		//		const auto offer = get_key_value(forwarded_msg, PEER_MSG_KEY);
-		//		const auto detail = get_key_value(forwarded_msg, DETAIL);
-		//		if (type == PEER_ICE) {
-		//			const int mline_index = std::stoi(get_key_value(offer, MINDEX));
-		//			const auto mid = get_key_value(offer, MID);
-		//			const auto sdp = get_key_value(offer, CANDIDATE_SDP);
-		//			const ice_candidates_info info{ mid, mline_index, sdp };
-		//			caller->on_webrtc_signalling_msg(msg_type, id, info, detail);
-		//		}
-		//		else {
-		//			const auto sdp = get_key_value(offer, SDP);
-		//			caller->on_webrtc_signalling_msg(msg_type, id, sdp, detail);
-		//		}
-		//			
-		//	}
-		//	else if (type == PEER_CALL_REQ) {
-		//		const auto detail = get_key_value(forwarded_msg, DETAIL);
-		//		caller->on_message(message_type::call_req,
-		//			call_req_info{ to_call_type(detail) , id, forwarded_msg });
-		//		//caller->on_call_req(to_call_type(detail), id);
-		//	}
-		//	else if (type == PEER_CALL_RES) {
-		//		const auto detail = get_key_value(forwarded_msg, DETAIL);
-		//		const auto status = get_key_value(forwarded_msg, STATUS);
-		//		const auto is_accepted = is_call_accepted(status);
-		//		const auto remote_id = get_key_value(forwarded_msg, ID);
-		//		const auto url = get_key_value(forwarded_msg, URL);
-		//		caller->on_message(
-		//			message_type::call_req_res,
-		//			call_response_info{ detail, 
-		//			remote_id, is_accepted, url, status, id, forwarded_msg }
-		//		);
-		//	}
-		//}
+		void _parse_forwarded(std::string id, std::string forwarded_msg, parser_callback* caller) {
+			assert(caller);
+			const auto json_msg = json::parse(forwarded_msg);
+			const std::string type = json_msg[TYPE];//detail::get_type(forwarded_msg);
+			if (type == PEER_OFFER || type == PEER_ANS || type == PEER_ICE) {
+				auto to_webrtc_signalling_msg = [](const std::string type)->webrtc_message_type {
+					if (type == PEER_OFFER) return webrtc_message_type::OFFER;
+					if (type == PEER_ANS) return webrtc_message_type::ANSWER;
+					if (type == PEER_ICE) return webrtc_message_type::ICE_CANDIDATES;
+					assert(false);
+				};
+				const auto msg_type = to_webrtc_signalling_msg(type);
+				const std::string offer = json_msg[PEER_MSG_KEY];
+				const std::string detail = json_msg[DETAIL];
+				
+				const auto joffer = json::parse(offer);
+				if (type == PEER_ICE) {
+					const std::string mid_index = joffer[MINDEX];
+					const int mline_index = std::stoi(mid_index);
+					const std::string mid = joffer[MID];
+					const std::string sdp = joffer[CANDIDATE_SDP];
+					const ice_candidates_info info{ mid, mline_index, sdp };
+					caller->on_webrtc_signalling_msg(msg_type, id, info, detail);
+				}
+				else {
+					const std::string sdp = joffer[SDP];
+					caller->on_webrtc_signalling_msg(msg_type, id, sdp, detail);
+				}
+					
+			}
+			else if (type == PEER_CALL_REQ) {
+				const std::string detail = json_msg[ DETAIL];
+				caller->on_message(message_type::call_req,
+					call_req_info{ to_call_type(detail) , id, forwarded_msg });
+				//caller->on_call_req(to_call_type(detail), id);
+			}
+			else if (type == PEER_CALL_RES) {
+				const std::string detail = json_msg[DETAIL];
+				const std::string status = json_msg[STATUS];
+				const auto is_accepted = is_call_accepted(status);
+				const std::string remote_id = json_msg[ID];
+				const std::string url = json_msg[ URL];
+				caller->on_message(
+					message_type::call_req_res,
+					call_response_info{ detail, 
+					remote_id, is_accepted, url, status, id, forwarded_msg }
+				);
+			}
+		}
 
 		void _parse(std::string msg, parser_callback* caller) {
 			assert(caller);
 			const auto json_msg = json::parse(msg);
 			const auto type = json_msg[TYPE];
 			if (type == REG_USR_REQ) {
-				assert(false);
-				/*const auto name = detail::get_register_user_name(msg);
-				caller->on_user_register_req(name);*/
+				//assert(false);
+				const std::string name = json_msg[NAME];
+				caller->on_user_register_req(name);
 			}
 			else if (type == REG_USR_REQ_RES) {
 				const auto status = json_msg[STATUS]; //get_key_value(msg, STATUS);
 				if (status == OKAY) {
-					const auto id = json_msg[ID];// get_key_value(msg, ID);
+					const std::string id = json_msg[ID];// get_key_value(msg, ID);
 					caller->on_user_register_response(true, id);
 				}
 				else {
@@ -184,85 +189,86 @@ namespace grt {
 				}
 			}
 			else if (type == ICE_CANDIDATES_REQ_RES) {
-				assert(false);
-				/*const auto status = get_key_value(msg, STATUS);
+				//assert(false);
+				const std::string status = json_msg[STATUS];
 				if (is_status_okay(status)) {
-					const auto detail = get_key_value(msg, DETAIL);
+					const std::string detail = json_msg[DETAIL]; 
 					caller->on_ice_servers_req_res(true, detail);
 				}
 				else {
 					caller->on_ice_servers_req_res(false, std::string{});
-				}*/
+				}
 			}
 			else if (type == PRESENCE_NOTIFICATION) {
-				assert(false);
-				/*const auto notify_msg = get_key_value(msg, PEER_MSG_KEY);
-				const auto prsence_type = get_key_value(notify_msg, TYPE);
-				const auto id = get_key_value(notify_msg, KEY);
-				const auto name = get_key_value(notify_msg, NAME);
-				caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);*/
+				//assert(false);
+				const std::string peer_msg = json_msg[PEER_MSG_KEY];
+				const auto notify_msg = json::parse(peer_msg);
+				const std::string prsence_type = notify_msg[TYPE];
+				const std::string id = notify_msg[KEY];
+				const std::string name = notify_msg[NAME];
+				caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);
 			}
 			else if (type == FORWARD_MSG_TYPE_KEY) {
-				assert(false);
-			/*	const auto from = get_key_value(msg, FROM);
-				const auto forwarded_msg = get_key_value(msg, PEER_MSG_KEY);
-				_parse_forwarded(from, forwarded_msg, caller);*/
+				//assert(false);
+				const std::string from = json_msg[FROM];
+				const std::string forwarded_msg = json_msg[PEER_MSG_KEY];
+				_parse_forwarded(from, forwarded_msg, caller);
 			}
 			else if (type == SIGNALLING_SERVER_URL) {
-				assert(false);
-			/*	const auto ip = get_key_value(msg, IP);
-				const auto port = get_key_value(msg, PORT);
-				caller->on_signalling_url(ip, port);*/
+				//assert(false);
+				const std::string ip = json_msg[IP];
+				const std::string port = json_msg[PORT];
+				caller->on_signalling_url(ip, port);
 			}
 			else if (type == CREATE_CONNECTION) {
-				assert(false);
-				/*const auto id = get_key_value(msg, ID);
-				const auto url = get_key_value(msg, URL);
-				caller->on_message(grt::message_type::create_peer, callee_address{ url, id });*/
+				//assert(false);
+				const  std::string id = json_msg[ID];// get_key_value(msg, ID);
+				const  std::string url = json_msg[URL];// get_key_value(msg, URL);
+				caller->on_message(grt::message_type::create_peer, callee_address{ url, id });
 			}
 			else if (type == REMOVE_CONNECTION) {
-				assert(false);
-				/*const auto id = get_key_value(msg, ID);
-				caller->on_message(grt::message_type::remove_peer, id);*/
+				//assert(false);
+				const std::string id = json_msg[ID];
+				caller->on_message(grt::message_type::remove_peer, id);
 			}
 			else if (type == LOGIN_RES) {
 				std::cout << "login response receviced\n";
-				/*const auto status = get_key_value(msg, STATUS);
+				const std::string status = json_msg[STATUS];
 				assert(is_status_okay(status));
-				const auto ip = get_key_value(msg, IP);
-				const auto port = get_key_value(msg, PORT);
+				const std::string ip = json_msg[IP];
+				const std::string port = json_msg[PORT];
 				caller->on_message(message_type::login_res,
-					login_res{ is_status_okay(status), ip, port });*/
-				assert(false);
+					login_res{ is_status_okay(status), ip, port });
+				//assert(false);
 			}
 			else if (type == LOGIN_REQ) {
-				assert(false);
-				/*const auto ip = get_key_value(msg, IP);
-				const auto usr = get_key_value(msg, USR);
-				const auto pwd = get_key_value(msg, PWD);
+				//assert(false);
+				const std::string ip = json_msg[IP];// get_key_value(msg, IP);
+				const std::string usr = json_msg[USR];
+				const std::string pwd = json_msg[PWD];
 				caller->on_message(message_type::login_req,
-					login_req{ usr, pwd, ip });*/
+					login_req{ usr, pwd, ip });
 			}
 			else if (type == CALL_RES_EVNT) {
-				assert(false);
+				//assert(false);
 				//const auto 
-		/*	const auto status =	get_key_value(msg, STATUS);
+			const std::string status = json_msg[STATUS];
 			const bool is_accepted = is_call_accepted(status);
-			const auto remote_id = get_key_value(msg, FROM);
-			const auto self_id = get_key_value(msg, ID);
-			const auto detail = get_key_value(msg, DETAIL);
+			const std::string remote_id = json_msg[FROM];
+			const std::string self_id = json_msg[ID];
+			const std::string detail = json_msg[DETAIL];
 			caller->on_message(message_type::call_res_evt, 
-				call_res_event{to_call_type(detail),remote_id, self_id, is_accepted });*/
+				call_res_event{to_call_type(detail),remote_id, self_id, is_accepted });
 
 			}
 			else if (type == SIGNALLING_SERV_REQ_RES) {
-				assert(false);
-			/*	const auto status = get_key_value(msg, STATUS);
+				//assert(false);
+				const std::string status = json_msg[STATUS];
 				const auto is_ok = is_status_okay(status);
-				const auto ip = is_ok ? get_key_value(msg, IP) : std::string{};
-				const auto port = is_ok ? get_key_value(msg, PORT) : std::string{};
+				const std::string ip = is_ok ? json_msg[IP] : std::string{};
+				const std::string port = is_ok ? json_msg[PORT] : std::string{};
 				caller->on_message(message_type::signalling_serv_req_res,
-					signaling_server_req_res{is_ok, ip, port});*/
+					signaling_server_req_res{is_ok, ip, port});
 			}
 			else if (type == "room_open_response") {
 				const auto status = json_msg[STATUS];
@@ -383,26 +389,6 @@ namespace grt {
 		
 	}//namespace detail
 
-	//void add_ptree(ptree& pt) {
-	//	return;
-	//}
-
-	//template<typename T, typename... Args>
-	//void add_ptree(ptree& pt, T&& t, Args&&... args) {
-	//	pt.put(t.first, t.second);
-	//	add_ptree(pt, std::forward<Args>(args)...);
-	//}
-
-	//template<typename... Args>
-	//std::string 
-	//	make_json_string(Args&&... args) {
-	//	ptree pt;
-	//	add_ptree(pt, std::forward<Args>(args)...);
-	//	std::stringstream ss;
-	//	boost::property_tree::json_parser::write_json(ss, pt);
-
-	//	return ss.str();
-	//}
 
 	std::string 
 		create_room_create_req(std::string room_name) {
@@ -674,140 +660,145 @@ namespace grt {
 		return j2.dump();
 	}
 
-	//std::string 
-	//	make_register_user_res(std::string id, bool okay) {
-	//	return
-	//		make_json_string(
-	//			std::make_pair(TYPE, REG_USR_REQ_RES),
-	//			std::make_pair(STATUS, (okay ? OKAY : ERR)),
-	//			std::make_pair(ID, id)
-	//		);
-	//}
+	std::string 
+		make_register_user_res(std::string id, bool okay) {
+		const json j2 = {
+						{TYPE, REG_USR_REQ_RES},
+						{STATUS, (okay ? OKAY : ERR)},
+						{ID, id}
+						};
+		return j2.dump();
+	}
 
-	//std::string 
-	//	create_ice_servers_req(std::string id) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, REQ_ICE_CANDIDATES),
-	//		std::make_pair(ID, id)
-	//	);
-	//}
+	std::string 
+		create_ice_servers_req(std::string id) {
+		const json j2 = {
+						{TYPE, REQ_ICE_CANDIDATES},
+						{ID, id}
+						};
+		return j2.dump();
+	}
 
-	//std::string 
-	//	make_forwarded_message(std::string to, std::string self, std::string msg) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, FORWARD_MSG_TYPE_KEY),
-	//		std::make_pair(TO, to),
-	//		std::make_pair(FROM, self),
-	//		std::make_pair(PEER_MSG_KEY, msg)
-	//	);
-	//}
+	std::string 
+		make_forwarded_message(std::string to, std::string self, std::string msg) {
+		const json j2 = {
+							{TYPE, FORWARD_MSG_TYPE_KEY},
+							{TO, to},
+							{FROM, self},
+							{PEER_MSG_KEY, msg}
+						};
+		return j2.dump();
 
-	//std::string 
-	//	make_webrtc_signalling_msg(webrtc_message_type type, std::string detail, std::string msg) {
-	//	using message_type = webrtc_message_type;
-	//	auto convert_string = [](message_type type) {
-	//		switch (type) {
-	//		case message_type::ANSWER:return PEER_ANS;
-	//		case message_type::ICE_CANDIDATES: return PEER_ICE;
-	//		case message_type::OFFER: return PEER_OFFER;
-	//		assert(false);
-	//		}
-	//	};
+	}
 
-	//	const auto type_str = convert_string(type);
-	//	
-	//	if (type == message_type::ANSWER || type == message_type::OFFER) {
-	//		const auto forwarded_msg = make_json_string(
-	//			std::make_pair(TYPE, type_str),
-	//			std::make_pair(SDP, msg)
-	//		);
-	//		return make_json_string(
-	//			std::make_pair(TYPE, type_str),
-	//			std::make_pair(DETAIL, detail),
-	//			std::make_pair(PEER_MSG_KEY, forwarded_msg)
-	//		);
-	//	}
-	//
-	//	return make_json_string(
-	//		std::make_pair(TYPE, type_str),
-	//		std::make_pair(DETAIL, detail),
-	//		std::make_pair(PEER_MSG_KEY, msg)
-	//	);
-	//}
+	std::string 
+		make_webrtc_signalling_msg(webrtc_message_type type, std::string detail, std::string msg) {
+		using message_type = webrtc_message_type;
+		auto convert_string = [](message_type type) {
+			switch (type) {
+			case message_type::ANSWER:return PEER_ANS;
+			case message_type::ICE_CANDIDATES: return PEER_ICE;
+			case message_type::OFFER: return PEER_OFFER;
+			assert(false);
+			}
+		};
 
-	//std::string create_call_req(call_type type) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, PEER_CALL_REQ),
-	//		std::make_pair(DETAIL, detail::to_string(type))
-	//	);
-	//}
+		const auto type_str = convert_string(type);
+		
+		if (type == message_type::ANSWER || type == message_type::OFFER) {
+			const std::string forwarded_msg = json{
+											{TYPE, type_str},
+											{SDP, msg}
+										}.dump();
+										
+			return json{
+						{TYPE, type_str},
+						{DETAIL, detail},
+						{PEER_MSG_KEY, forwarded_msg}
+						}.dump();
+		}
+	
+		return json{
+				{TYPE, type_str},
+				{DETAIL, detail},
+				{PEER_MSG_KEY, msg}
+				}.dump();
+	}
 
-	////todo: remove this function dependency asap
-	//std::string _to_url(std::string ip, std::string port) {
-	//	return std::string{ "ws://" } +ip + ':' + port;
-	//}
+	std::string create_call_req(call_type type) {
+		return json{
+						{TYPE, PEER_CALL_REQ},
+						{DETAIL, detail::to_string(type)}
+					}.dump();
+	}
 
-	//std::string 
-	//	create_call_req_res(call_type type, bool is_accept, std::string ip, std::string port, std::string id) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, PEER_CALL_RES),
-	//		std::make_pair(DETAIL, detail::to_string(type)),
-	//		std::make_pair(STATUS, detail::to_string(is_accept)),
-	//		std::make_pair(URL, _to_url(ip, port)),
-	//		std::make_pair(ID, id)
-	//	);
-	//}
+	//todo: remove this function dependency asap
+	std::string _to_url(std::string ip, std::string port) {
+		return std::string{ "ws://" } +ip + ':' + port;
+	}
 
-	//std::string 
-	//	make_connection_status(bool is_okay) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, CON_STATUS),
-	//		std::make_pair(STATUS, detail::to_connection_status_str(is_okay))
-	//	);
-	//}
+	std::string 
+		create_call_req_res(call_type type, bool is_accept, std::string ip, std::string port, std::string id) {
+		return json{
+					{TYPE, PEER_CALL_RES},
+					{DETAIL, detail::to_string(type)},
+					{STATUS, detail::to_string(is_accept)},
+					{URL, _to_url(ip, port)},
+					{ID, id}
+				}.dump();
+	}
 
-	//std::string 
-	//	make_prsence_notifcation(bool is_connected, std::string id, std::string name) {
-	//	const auto m = make_json_string(
-	//		std::make_pair(TYPE, detail::to_connection_status_str(is_connected)),
-	//		std::make_pair(KEY, id),
-	//		std::make_pair(NAME, name)
+	std::string 
+		make_connection_status(bool is_okay) {
+		return json{
+						{TYPE, CON_STATUS},
+						{STATUS, detail::to_connection_status_str(is_okay)}
+					}.dump();
+	}
 
-	//	);
-	//	return make_json_string(
-	//		std::make_pair(TYPE, PRESENCE_NOTIFICATION),
-	//		std::make_pair(PEER_MSG_KEY, m)
-	//	);
-	//}
+	std::string 
+		make_prsence_notifcation(bool is_connected, std::string id, std::string name) {
 
-	//std::string 
-	//make_show_message(std::string message, std::string id) {
-	//	return make_json_string(
-	//		std::make_pair(TYPE, SHOW_MSG),
-	//		std::make_pair(PEER_MSG_KEY, message),
-	//		std::make_pair(ID, id)
-	//	);
-	//}
+		const auto m =  json{
+					{TYPE, detail::to_connection_status_str(is_connected)},
+					{KEY, id},
+					{NAME, name}
+					}.dump();
+		return json{
+					{TYPE, PRESENCE_NOTIFICATION},
+					{PEER_MSG_KEY, m}
+					}.dump();
 
-	//std::string 
-	//	stringify(ice_candidates_info info) {
-	//	return make_json_string(
-	//		std::make_pair(MID, info.mid_),
-	//		std::make_pair(MINDEX, std::to_string(info.mline_index_)),
-	//		std::make_pair(CANDIDATE_SDP, info.sdp_)
-	//	);
-	//}
+	}
 
-	//std::string
-	//	make_login_message(std::string user_name, std::string pwd) {
-	//	return std::string{ "/login_req?" } +"user=" + user_name + "&pwd=" + pwd;
-	//}
+	std::string 
+	make_show_message(std::string message, std::string id) {
+		return json{
+					{TYPE, SHOW_MSG},
+					{PEER_MSG_KEY, message},
+					{ID, id}
+					}.dump();
+	}
 
-	//std::string make_signalling_server_message() {
-	//	return make_json_string(
-	//			std::make_pair(TYPE, SIGNALLING_SERV_REQ)
-	//	);
-	//}
+	std::string 
+		stringify(ice_candidates_info info) {
+		return json{
+					{MID, info.mid_},
+					{MINDEX, std::to_string(info.mline_index_)},
+					{CANDIDATE_SDP, info.sdp_}
+					}.dump();
+	}
+
+	std::string
+		make_login_message(std::string user_name, std::string pwd) {
+		return std::string{ "/login_req?" } +"user=" + user_name + "&pwd=" + pwd;
+	}
+
+	std::string make_signalling_server_message() {
+
+		return json{ {TYPE, SIGNALLING_SERV_REQ}
+						}.dump();
+	}
 
 	void async_parse_message(std::string msg, parser_callback* caller) {
 
@@ -817,9 +808,9 @@ namespace grt {
 		
 	}
 
-	//std::string get_type(std::string const& msg) {
-	//	return detail::get_type(msg);
-	//}
+	std::string get_type(std::string const& msg) {
+		return detail::get_type(msg);
+	}
 
 	//
 }//namespace grt
