@@ -135,8 +135,8 @@ namespace grt {
 				
 				const auto joffer = json::parse(offer);
 				if (type == PEER_ICE) {
-					const std::string mid_index = joffer[MINDEX];
-					const int mline_index = std::stoi(mid_index);
+					//const std::string mid_index = joffer[MINDEX];
+					const int mline_index = joffer[MINDEX];//std::stoi(mid_index);
 					const std::string mid = joffer[MID];
 					const std::string sdp = joffer[CANDIDATE_SDP];
 					const ice_candidates_info info{ mid, mline_index, sdp };
