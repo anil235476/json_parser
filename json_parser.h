@@ -7,6 +7,7 @@
 
 using json = nlohmann::json;
 constexpr const char* FORWARD_MSG_TYPE_KEY{ "forward_message" };
+constexpr const char* ROOM_REQ{ "room_request" };
 namespace grt {
 
 	enum class webrtc_message_type {
