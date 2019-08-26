@@ -20,6 +20,10 @@ namespace grt {
 		call_req_res,
 		call_res_evt,
 		signalling_serv_req_res,
+		room_info_res,
+		room_open_res,
+		room_close_res,
+		room_serv_res,
 		create_room_res,
 		close_room_res,
 		room_join_req,
@@ -92,6 +96,12 @@ namespace grt {
 		std::string ip_;
 		std::string port_;
 	};
+
+	struct room_open_res {
+		bool is_okay_;
+		std::string id_;
+	};
+
 
 	struct room_connection_credential {
 		std::string ip_;
