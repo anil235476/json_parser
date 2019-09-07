@@ -29,6 +29,7 @@ namespace grt {
 		room_join_req,
 		room_open_req,
 		room_join_res,
+		req_room_serv_add,
 		req_room_info,
 		res_rooms_info,
 		room_leave_req,

@@ -357,6 +357,13 @@ namespace grt {
 				});
 				caller->on_message(message_type::res_rooms_info, output);
 			}
+			/*else if (type == "room_server_info") {
+						caller->on_message(message_type::req_room_serv_add, msg);
+			}*/
+			else if (type == "room_server_info_res") {
+				signaling_server_req_res const m{ detail::is_status_okay(json_msg[STATUS]), json_msg[IP], json_msg[PORT] };
+				caller->on_message(message_type::room_serv_res, m);
+			}
 			else if (type == "create_wnd_req") {
 			const std::string m = json_msg[PEER_MSG_KEY];
 			caller->on_message(message_type::wnd_create_req, m);
@@ -436,6 +443,17 @@ namespace grt {
 		make_room_join_req() {
 		const json j2 = {
 			{TYPE, "request_room_join"}
+		};
+		return j2.dump();
+	}
+
+	std::string
+		make_room_serv_res(signaling_server_req_res res) {
+		const json j2 = {
+			{TYPE, "room_server_info_res"},
+			{STATUS, detail::to_string(res.is_okay_)},
+			{IP, res.ip_},
+			{PORT, res.port_}
 		};
 		return j2.dump();
 	}

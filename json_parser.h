@@ -57,6 +57,7 @@ namespace grt {
 	std::string make_room_infos_req();
 	std::string make_room_join_req();
 	std::string make_room_leave_req(std::string room_id);
+	std::string make_room_serv_res(signaling_server_req_res res);
 	std::string convert_to_json(std::vector<room_info> const&);
 	std::string make_room_join_req_res(const bool status);
 	std::string create_register_user_req(std::string name);
