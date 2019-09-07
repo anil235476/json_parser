@@ -317,6 +317,11 @@ namespace grt {
 				caller->on_message(message_type::room_join_req,
 					room_connection_credential{ ip, port, room_id, user_name });
 			}
+			else if (type == "request_close")//todo: change name of this
+			{
+			const std::string id = json_msg[ID];
+			caller->on_message(message_type::room_leave_req, id);
+			}
 			else if (type == "request_room_open") {
 				caller->on_message(message_type::room_open_req, json_msg);
 			}
@@ -445,6 +450,15 @@ namespace grt {
 		make_room_join_req() {
 		const json j2 = {
 			{TYPE, "request_room_join"}
+		};
+		return j2.dump();
+	}
+
+	std::string 
+		make_room_leave_req(std::string room_id) {
+		const json j2 = {
+			{TYPE, "request_close"},
+			{ID, room_id}
 		};
 		return j2.dump();
 	}

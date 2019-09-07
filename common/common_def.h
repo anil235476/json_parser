@@ -27,6 +27,7 @@ namespace grt {
 		room_join_res,
 		req_room_info,
 		res_rooms_info,
+		room_leave_req,
 		router_capablity,
 		producer_transport_res,
 		produce_res,

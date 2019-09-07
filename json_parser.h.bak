@@ -34,8 +34,7 @@ namespace grt {
 		virtual void on_user_register_response(bool isokay, std::string id){}
 		virtual void on_prsence_notification(bool isconnected, std::string id, std::string name){}
 		virtual void on_ice_servers_req_res(bool isokay, std::string servers_list){}
-		virtual void on_error(std::string msg, std::string err){
-		}
+		virtual void on_error(std::string msg, std::string err){}
 		
 		virtual void on_webrtc_signalling_msg(webrtc_message_type type, 
 			std::string id, absl::any msg, std::string detail){}
