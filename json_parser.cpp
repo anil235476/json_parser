@@ -653,6 +653,14 @@ namespace grt {
 		return j2.dump();
 	}
 
+	std::string make_participant_info_req() {
+		const json j2 = {
+			{TYPE, "get_participants"}
+		};
+
+		return j2.dump();
+	}
+
 	std::string make_render_wnd_close_req(std::string const id) {
 		const json j2 = {
 			{TYPE, "wnd_close_req"},
