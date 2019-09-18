@@ -387,6 +387,12 @@ namespace grt {
 
 				caller->on_message(message_type::wnd_close_req_res, std::make_pair(status, id));
 			}
+			else if(type == "wnd_show_hide") {
+			const std::string m = json_msg[PEER_MSG_KEY];
+			//bool const to_show =  (m == "show");
+			caller->on_message(message_type::wnd_show_hide, m == "show");
+			
+			}
 			else if (type == "peer_remove") {
 				const std::string id = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::peer_remove, id);
@@ -674,6 +680,16 @@ namespace grt {
 			{TYPE, "wnd_close_req_res"},
 			{STATUS, is_ok},
 		{ID, id}
+		};
+		return j2.dump();
+	}
+
+	std::string make_show_hide_msg(bool to_show) {
+		const std::string m = to_show ? "show" : "hide";
+		assert(m == "show" || m == "hide");
+		const json j2 = {
+			{TYPE, "wnd_show_hide"},
+		{PEER_MSG_KEY, m }
 		};
 		return j2.dump();
 	}

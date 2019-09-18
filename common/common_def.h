@@ -45,6 +45,7 @@ namespace grt {
 		window_create_res,
 		wnd_close_req,
 		wnd_close_req_res,
+		wnd_show_hide,
 		invalid
 	};
 

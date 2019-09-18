@@ -81,6 +81,8 @@ namespace grt {
 	std::string make_render_wnd_close_req(std::string const id);
 	std::string make_render_wnd_close_res(bool is_ok, std::string const id);
 
+	std::string make_show_hide_msg(bool to_show);
+
 	std::string make_register_user_res(std::string id, bool okay);
 	std::string create_ice_servers_req(std::string id);
 	
