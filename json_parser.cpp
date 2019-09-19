@@ -398,6 +398,9 @@ namespace grt {
 				caller->on_message(message_type::peer_remove, id);
 				//todo : handle this case.
 			}
+			else if (type == "session_leave_req") {
+				caller->on_message(message_type::session_leave_req, "");
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
@@ -854,6 +857,12 @@ namespace grt {
 
 		return json{ {TYPE, SIGNALLING_SERV_REQ}
 						}.dump();
+	}
+
+	std::string make_user_session_leave_req() {
+		return json{
+			{TYPE, "session_leave_req"}
+		}.dump();
 	}
 
 	void async_parse_message(std::string msg, parser_callback* caller) {
