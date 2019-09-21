@@ -865,6 +865,13 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_peer_connection_remove_req(std::string id) {
+		return json{
+			{TYPE, REMOVE_CONNECTION},
+			{ID, id}
+		}.dump();
+	}
+
 	void async_parse_message(std::string msg, parser_callback* caller) {
 
 		std::thread{

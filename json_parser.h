@@ -100,6 +100,7 @@ namespace grt {
 	std::string stringify(ice_candidates_info info);
 	std::string make_login_message(std::string user_name, std::string pwd);
 	std::string make_signalling_server_message();
+	std::string make_peer_connection_remove_req(std::string id);
 	std::string make_user_session_leave_req();
 }//namespace grt
 
