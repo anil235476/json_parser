@@ -865,6 +865,12 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_session_leave_notification() {
+		return json{
+			{TYPE, "notify_session_close"}
+		}.dump();
+	}
+
 	std::string make_peer_connection_remove_req(std::string id) {
 		return json{
 			{TYPE, REMOVE_CONNECTION},

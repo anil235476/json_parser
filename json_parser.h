@@ -102,6 +102,7 @@ namespace grt {
 	std::string make_signalling_server_message();
 	std::string make_peer_connection_remove_req(std::string id);
 	std::string make_user_session_leave_req();
+	std::string make_session_leave_notification();
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
