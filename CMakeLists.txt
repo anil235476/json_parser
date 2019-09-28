@@ -13,6 +13,10 @@ add_library(json_parser
 	json_parser.h
 	json_parser.cpp
 	)
+	
+if(ENABLE_UNIT_TEST)
+add_subdirectory(unit_test)
+endif(ENABLE_UNIT_TEST)
 
 target_include_directories(json_parser PUBLIC 
 	$<BUILD_INTERFACE:${ABSL_PATH}>

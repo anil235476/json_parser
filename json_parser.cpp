@@ -108,14 +108,46 @@ namespace grt {
 			if (detail == VIDEO_CALL) return call_type::VIDEO;
 			if (detail == AUDIO_CALL) return call_type::AUDIO;
 			assert(false);
+			return call_type::unknown;
 		};
 
 		std::string to_string(call_type type) {
 			switch (type) {
 			case call_type::AUDIO: return AUDIO_CALL;
 			case call_type::VIDEO: return VIDEO_CALL;
+			default:
 				assert(false);
+
+			return "unknown";
 			}
+		}
+	
+		std::vector<grt::room_info> 
+			parse_to_room_info(std::string const& msg){
+			const auto json_msg = json::parse(msg);
+			const auto type = json_msg[TYPE];
+			assert(type == "response_room_info");
+			const int count = json_msg["count"];
+			const auto& ids = json_msg["ids"];
+			const auto& names = json_msg["names"];
+			std::vector<std::string> id_vec;
+			for (const std::string& elm : ids) {
+				id_vec.push_back(elm);
+			}
+			assert(id_vec.size() == count);
+
+			std::vector<std::string> name_vec;
+			for (const std::string& elm : names) {
+				name_vec.push_back(elm);
+			}
+			assert(name_vec.size() == count);
+			std::vector<room_info> output(count);
+			std::transform(id_vec.begin(), id_vec.end(), names.begin(), output.begin(),
+				[](const std::string& id, const std::string& name) {
+				room_info out; out.id_ = id; out.name_ = name;
+				return out;
+			});
+			return output;
 		}
 
 		void _parse_forwarded(std::string id, std::string forwarded_msg, parser_callback* caller) {
@@ -128,6 +160,7 @@ namespace grt {
 					if (type == PEER_ANS) return webrtc_message_type::ANSWER;
 					if (type == PEER_ICE) return webrtc_message_type::ICE_CANDIDATES;
 					assert(false);
+					return webrtc_message_type::unknown;
 				};
 				const auto msg_type = to_webrtc_signalling_msg(type);
 				const std::string offer = json_msg[PEER_MSG_KEY];
@@ -335,26 +368,7 @@ namespace grt {
 				caller->on_message(message_type::req_room_info, json_msg);
 			}
 			else if (type == "response_room_info") {
-				const int count = json_msg["count"];
-				const auto& ids = json_msg["ids"];
-				const auto& names = json_msg["names"];
-				std::vector<std::string> id_vec;
-				for (const std::string& elm : ids) {
-					id_vec.push_back(elm);
-				}
-				assert(id_vec.size() == count);
-
-				std::vector<std::string> name_vec;
-				for (const std::string& elm : names) {
-					name_vec.push_back(elm);
-				}
-				assert(name_vec.size() == count);
-				std::vector<room_info> output(count);
-				std::transform(id_vec.begin(), id_vec.end(), names.begin(), output.begin(),
-					[](const std::string& id, const std::string& name) {
-					room_info out; out.id_ = id; out.name_ = name;
-					return out;
-				});
+				const auto output = parse_to_room_info(msg);
 				caller->on_message(message_type::res_rooms_info, output);
 			}
 			/*else if (type == "room_server_info") {
@@ -495,8 +509,14 @@ namespace grt {
 			return first.name_ == name;
 		}).first == room_list.end());
 
-		json json_ids{ ids };
-		json json_names{ names };
+		json json_ids;
+		for (auto const v : ids) {
+			json_ids.push_back(v);
+		}
+		json json_names;
+		for (auto const v : names) {
+			json_names.push_back(v);
+		}
 
 		json const j2{
 			{TYPE, "response_room_info"},
@@ -758,7 +778,9 @@ namespace grt {
 			case message_type::ANSWER:return PEER_ANS;
 			case message_type::ICE_CANDIDATES: return PEER_ICE;
 			case message_type::OFFER: return PEER_OFFER;
+			default:
 			assert(false);
+			return "unknown";
 			}
 		};
 

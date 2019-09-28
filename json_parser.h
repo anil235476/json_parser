@@ -13,7 +13,8 @@ namespace grt {
 	enum class webrtc_message_type {
 		OFFER,
 		ANSWER,
-		ICE_CANDIDATES
+		ICE_CANDIDATES,
+		unknown
 	};
 
 	struct login_res {
@@ -103,6 +104,13 @@ namespace grt {
 	std::string make_peer_connection_remove_req(std::string id);
 	std::string make_user_session_leave_req();
 	std::string make_session_leave_notification();
+
+
+	//only for unit test 
+	namespace detail {
+		std::vector<grt::room_info>
+			parse_to_room_info(std::string const& msg);
+	}
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

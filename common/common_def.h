@@ -63,7 +63,8 @@ namespace grt {
 
 	enum class call_type {
 		AUDIO,
-		VIDEO
+		VIDEO,
+		unknown
 	};
 
 
@@ -117,6 +118,9 @@ namespace grt {
 	struct room_info {
 		std::string id_;
 		std::string name_;
+		bool operator==(room_info const& other) const {
+			return id_ == other.id_ && name_ == other.name_;
+		}
 	};
 
 	struct wnd_create_res {
