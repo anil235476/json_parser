@@ -105,12 +105,13 @@ namespace grt {
 	std::string make_user_session_leave_req();
 	std::string make_session_leave_notification();
 
-
+#ifdef ENABLE_UNIT_TETS
 	//only for unit test 
 	namespace detail {
 		std::vector<grt::room_info>
 			parse_to_room_info(std::string const& msg);
 	}
+#endif//
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
