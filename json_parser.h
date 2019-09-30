@@ -26,7 +26,8 @@ namespace grt {
 	struct login_req {
 		std::string usr_;
 		std::string pwd_;
-		std::string server_;
+		std::string ip_;
+		std::string port_;
 	};
 
 	class parser_callback {

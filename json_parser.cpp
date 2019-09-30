@@ -279,8 +279,9 @@ namespace grt {
 				const std::string ip = json_msg[IP];// get_key_value(msg, IP);
 				const std::string usr = json_msg[USR];
 				const std::string pwd = json_msg[PWD];
+				const std::string port = json_msg[PORT];
 				caller->on_message(message_type::login_req,
-					login_req{ usr, pwd, ip });
+					login_req{ usr, pwd, ip, port });
 			}
 			else if (type == CALL_RES_EVNT) {
 				//assert(false);
@@ -872,7 +873,12 @@ namespace grt {
 
 	std::string
 		make_login_message(std::string user_name, std::string pwd) {
-		return std::string{ "/login_req?" } +"user=" + user_name + "&pwd=" + pwd;
+		//return std::string{ "/login_req?" } +"user=" + user_name + "&pwd=" + pwd;
+		return json{
+			{TYPE, "login_req"},
+			{"user", user_name},
+			{"pwd", pwd}
+		}.dump();
 	}
 
 	std::string make_signalling_server_message() {
