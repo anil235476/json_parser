@@ -71,7 +71,7 @@ namespace grt {
 			return (status == OKAY || status == OKAY_ || status == SUCESS);
 		}
 
-		bool 
+		std::string 
 			convert_to_success(bool const status) {
 			return status ? SUCESS : ERR;
 		}
@@ -316,7 +316,7 @@ namespace grt {
 				caller->on_message(message_type::close_room_res, status);
 			}
 			else if (type == "room_join_response") {
-				const std::string status = json_msg[STATUS];
+				const auto status = detail::is_status_okay(json_msg[STATUS]);
 				caller->on_message(message_type::room_join_res, status);
 			}
 			else if (type == "response_router_capablity") {
@@ -492,7 +492,7 @@ namespace grt {
 	}
 
 	std::string 
-		convert_to_json(std::vector<room_info> const& room_list) {
+		convert_to_json(bool success, std::vector<room_info> const& room_list) {
 		auto const count = room_list.size();
 		std::vector<std::string> ids(count);
 		assert(count == ids.size());
@@ -521,6 +521,7 @@ namespace grt {
 
 		json const j2{
 			{TYPE, "response_room_info"},
+		{STATUS, detail::convert_to_success(success)},
 			{"count", count},
 		{"ids", json_ids},
 		{"names", json_names}
