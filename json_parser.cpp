@@ -53,11 +53,22 @@ constexpr const char* PWD{ "pwd" };
 constexpr const char* CALL_RES_EVNT{ "call_response_event" };
 constexpr const char* SIGNALLING_SERV_REQ{ "request_signalling_server" };
 constexpr const char* SIGNALLING_SERV_REQ_RES{ "response_siganalling_server" };
+//constexpr const char* CONNECTION_DISCONNECT{ "connection_disconnect" };
+constexpr const char* CONNECTION_ERROR{ "connection_error" };
 
 using json = nlohmann::json;
 namespace grt {
 	
 	namespace detail {
+
+		std::string 
+			to_string(message_type type) {
+			if (type == message_type::connection_error) return CONNECTION_ERROR;
+			else {
+				assert(false);
+			}
+			return std::string{}; //it is just to remove warning.
+		}
 
 		//std::string get_key_value(std::string json, std::string key) {
 		//	ptree pt;
@@ -415,6 +426,10 @@ namespace grt {
 			}
 			else if (type == "session_leave_req") {
 				caller->on_message(message_type::session_leave_req, "");
+			}
+			else if (type == CONNECTION_ERROR) {
+				const std::string m = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::connection_error, m);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
@@ -897,6 +912,14 @@ namespace grt {
 	std::string make_session_leave_notification() {
 		return json{
 			{TYPE, "notify_session_close"}
+		}.dump();
+	}
+
+	std::string make_json_msg(message_type type, std::string detail){
+		return json{
+			{TYPE, detail::to_string(type)},
+			{PEER_MSG_KEY, detail}
+
 		}.dump();
 	}
 

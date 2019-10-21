@@ -105,6 +105,7 @@ namespace grt {
 	std::string make_peer_connection_remove_req(std::string id);
 	std::string make_user_session_leave_req();
 	std::string make_session_leave_notification();
+	std::string make_json_msg(message_type type, std::string detail);
 
 #ifdef ENABLE_UNIT_TETS
 	//only for unit test 
