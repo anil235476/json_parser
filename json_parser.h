@@ -106,6 +106,7 @@ namespace grt {
 	std::string make_user_session_leave_req();
 	std::string make_session_leave_notification();
 	std::string make_json_msg(message_type type, std::string detail);
+	std::string make_json_msg(chat_msg msg);
 
 #ifdef ENABLE_UNIT_TETS
 	//only for unit test 

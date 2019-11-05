@@ -55,6 +55,7 @@ constexpr const char* SIGNALLING_SERV_REQ{ "request_signalling_server" };
 constexpr const char* SIGNALLING_SERV_REQ_RES{ "response_siganalling_server" };
 //constexpr const char* CONNECTION_DISCONNECT{ "connection_disconnect" };
 constexpr const char* CONNECTION_ERROR{ "connection_error" };
+constexpr const char* CHAT_MSG_TYPE{ "chat_message" };
 
 using json = nlohmann::json;
 namespace grt {
@@ -208,6 +209,13 @@ namespace grt {
 					message_type::call_req_res,
 					call_response_info{ detail, 
 					remote_id, is_accepted, url, status, id, forwarded_msg }
+				);
+			}
+			else if (type == CHAT_MSG_TYPE) {
+				const std::string name = json_msg[NAME];
+				const std::string chat = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::chat_msg, 
+					chat_msg{id, name, chat}
 				);
 			}
 		}
@@ -920,6 +928,14 @@ namespace grt {
 			{TYPE, detail::to_string(type)},
 			{PEER_MSG_KEY, detail}
 
+		}.dump();
+	}
+
+	std::string make_json_msg(chat_msg msg) {
+		return json{
+			{TYPE, CHAT_MSG_TYPE},
+		{PEER_MSG_KEY, msg.msg_},
+		{NAME, msg.sender_name_}
 		}.dump();
 	}
 

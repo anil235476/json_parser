@@ -48,6 +48,7 @@ namespace grt {
 		wnd_show_hide,
 		session_leave_req,
 		connection_error,
+		chat_msg,
 		invalid
 	};
 
@@ -130,6 +131,12 @@ namespace grt {
 		std::string parent_wnd_name_;
 		std::string child_wnd_id_;
 		std::string id;
+	};
+
+	struct chat_msg {
+		std::string sender_id_;
+		std::string sender_name_;
+		std::string msg_;
 	};
 
 }//namespace grt
