@@ -115,6 +115,8 @@ namespace grt {
 			parse_to_room_info(std::string const& msg);
 	}
 #endif//
+	std::string make_mic_toggle_req(bool on);
+	std::string make_camera_toggle_req(bool on);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

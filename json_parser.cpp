@@ -946,6 +946,21 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_mic_toggle_req(bool on) {
+		return json{
+			{TYPE, "mic_toggle_req"},
+		{PEER_MSG_KEY, on}
+		}.dump();
+	}
+
+	std::string make_camera_toggle_req(bool on) {
+		return json{
+			{TYPE, "cam_toggle_req"},
+		{PEER_MSG_KEY, on}
+
+		}.dump();
+	}
+
 	void async_parse_message(std::string msg, parser_callback* caller) {
 
 		std::thread{
