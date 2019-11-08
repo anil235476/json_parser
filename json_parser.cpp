@@ -439,6 +439,14 @@ namespace grt {
 				const std::string m = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::connection_error, m);
 			}
+			else if (type == "mic_toggle_req") {
+				const bool on = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::mic_toggle, on);
+			}
+			else if (type == "cam_toggle_req") {
+					const bool on = json_msg[PEER_MSG_KEY];
+					caller->on_message(message_type::cam_toggle, on);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");

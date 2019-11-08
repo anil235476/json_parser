@@ -49,6 +49,8 @@ namespace grt {
 		session_leave_req,
 		connection_error,
 		chat_msg,
+		mic_toggle,
+		cam_toggle,
 		invalid
 	};
 
