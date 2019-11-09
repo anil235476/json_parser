@@ -8,6 +8,7 @@ namespace grt {
 		answer_sdp,
 		ice_candidates,
 		remote_stream_attached_evt,
+		remote_stream_remove_evt,
 		connection_disconnected,
 		connection_connected,
 		renegotiation_needed,
