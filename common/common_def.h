@@ -10,6 +10,7 @@ namespace grt {
 		remote_stream_attached_evt,
 		connection_disconnected,
 		connection_connected,
+		renegotiation_needed,
 		user_registration_req,
 		forward_message,
 		create_peer,
