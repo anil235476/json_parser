@@ -4,6 +4,7 @@
 #include <absl/types/any.h>
 #include "common/common_def.h" //todo: make proper path for this file
 #include <json.hpp>
+#include "executor/executor.h"
 
 using json = nlohmann::json;
 constexpr const char* FORWARD_MSG_TYPE_KEY{ "forward_message" };
@@ -49,6 +50,7 @@ namespace grt {
 	};
 
 	void async_parse_message(std::string msg, parser_callback* caller);
+	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);
 
 	std::string get_type(std::string const& msg);
 

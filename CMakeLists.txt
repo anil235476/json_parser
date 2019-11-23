@@ -23,6 +23,7 @@ endif(ENABLE_UNIT_TEST)
 target_include_directories(json_parser PUBLIC 
 	$<BUILD_INTERFACE:${ABSL_PATH}>
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../utility>
 	)
 
 target_sources(json_parser PRIVATE

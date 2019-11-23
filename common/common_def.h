@@ -53,6 +53,8 @@ namespace grt {
 		chat_msg,
 		mic_toggle,
 		cam_toggle,
+		producer_add,
+		producer_close,
 		invalid
 	};
 
@@ -129,6 +131,8 @@ namespace grt {
 		}
 	};
 
+	using peer_info = room_info;
+
 	struct wnd_create_res {
 		bool status_{ false };
 		std::string class_name_;
@@ -141,6 +145,11 @@ namespace grt {
 		std::string sender_id_;
 		std::string sender_name_;
 		std::string msg_;
+	};
+
+	struct producer_info {
+		std::string peer_id_;
+		std::string producer_id_;
 	};
 
 }//namespace grt

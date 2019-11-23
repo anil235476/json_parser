@@ -56,7 +56,8 @@ constexpr const char* SIGNALLING_SERV_REQ_RES{ "response_siganalling_server" };
 //constexpr const char* CONNECTION_DISCONNECT{ "connection_disconnect" };
 constexpr const char* CONNECTION_ERROR{ "connection_error" };
 constexpr const char* CHAT_MSG_TYPE{ "chat_message" };
-
+constexpr const char* PEER_ID{ "peerId" };
+constexpr const char* PRODUCER_ID{ "producerId" };
 using json = nlohmann::json;
 namespace grt {
 	
@@ -359,7 +360,19 @@ namespace grt {
 			}
 			else if (type == "peer_add") {
 				const std::string id = json_msg[PEER_MSG_KEY];
-				caller->on_message(message_type::peer_add, id);
+				const std::string name = "todo";// json_msg[NAME]; it is getting ailed.
+				caller->on_message(message_type::peer_add, peer_info{ id, name });
+			}
+			else if (type == "producer_add") {
+				const std::string peerId = json_msg[PEER_ID];
+				const std::string producerId = json_msg[PRODUCER_ID];
+				caller->on_message(message_type::producer_add, producer_info{ peerId, producerId });
+
+			}
+			else if (type == "producer_close") {
+				const std::string peerId = json_msg[PEER_ID];
+				const std::string producerId = json_msg[PRODUCER_ID];
+				caller->on_message(message_type::producer_close, producer_info{ peerId, producerId });
 			}
 			else if (type == "responseConsumer") {
 				const auto m = json_msg[PEER_MSG_KEY];
@@ -975,6 +988,12 @@ namespace grt {
 			detail::_parse, msg, caller
 		}.detach();
 		
+	}
+
+
+	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller) {
+		auto f = util::make_task(&detail::_parse, msg, caller);
+		executor->submit(f);
 	}
 
 	std::string get_type(std::string const& msg) {
