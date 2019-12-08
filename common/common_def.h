@@ -13,6 +13,7 @@ namespace grt {
 		connection_connected,
 		renegotiation_needed,
 		user_registration_req,
+		user_registeration_res,
 		forward_message,
 		create_peer,
 		remove_peer,
@@ -55,6 +56,7 @@ namespace grt {
 		cam_toggle,
 		producer_add,
 		producer_close,
+		presence_notification,
 		invalid
 	};
 
@@ -115,6 +117,8 @@ namespace grt {
 		std::string id_;
 	};
 
+	using registration_res = room_open_res;
+
 
 	struct room_connection_credential {
 		std::string ip_;
@@ -132,6 +136,18 @@ namespace grt {
 	};
 
 	using peer_info = room_info;
+
+	enum class user_status {
+		online,
+		offline,
+		busy,
+	};
+
+	struct presence_notification {
+		std::string id_;
+		std::string name_;
+		user_status status_;
+	};
 
 	struct wnd_create_res {
 		bool status_{ false };

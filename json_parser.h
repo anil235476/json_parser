@@ -34,12 +34,8 @@ namespace grt {
 	class parser_callback {
 	public:
 		virtual ~parser_callback(){}
-		virtual void on_user_register_req(std::string name) {}
-		virtual void on_user_register_response(bool isokay, std::string id){}
-		virtual void on_prsence_notification(bool isconnected, std::string id, std::string name){}
 		virtual void on_ice_servers_req_res(bool isokay, std::string servers_list){}
-		virtual void on_error(std::string msg, std::string err){
-		}
+		virtual void on_error(std::string msg, std::string err){}
 		
 		virtual void on_webrtc_signalling_msg(webrtc_message_type type, 
 			std::string id, absl::any msg, std::string detail){}
@@ -98,7 +94,7 @@ namespace grt {
 
 	std::string create_call_req_res(call_type type, bool is_accept, std::string ip, std::string port, std::string id);
 	std::string make_connection_status(bool is_okay);
-	std::string make_prsence_notifcation(bool is_connected, std::string id, std::string name);
+	std::string make_prsence_notifcation(presence_notification);
 	std::string make_show_message(std::string message, std::string id);
 	struct ice_candidates_info; //forward declaration
 	std::string stringify(ice_candidates_info info);

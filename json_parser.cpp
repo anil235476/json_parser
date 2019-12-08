@@ -97,13 +97,19 @@ namespace grt {
 			return is_accept?"yes" : "no";
 		}
 
-		bool is_connected_msg(std::string status) {
-			return (status == CONNECTED);
+
+		user_status to_user_status(std::string status) {
+			return (status == CONNECTED) ? user_status::online : user_status::offline;
 		}
 
 		std::string to_connection_status_str(bool status) {
 			return status ? CONNECTED : ERR;
 		}
+
+		std::string to_string(user_status status) {
+			return status == user_status::online ? CONNECTED : ERR;
+		}
+		 
 
 		std::string
 			get_type(std::string json) {
@@ -228,17 +234,17 @@ namespace grt {
 			if (type == REG_USR_REQ) {
 				//assert(false);
 				const std::string name = json_msg[NAME];
-				caller->on_user_register_req(name);
+				caller->on_message(message_type::user_registration_req, name);
 			}
 			else if (type == REG_USR_REQ_RES) {
 				const auto status = json_msg[STATUS]; //get_key_value(msg, STATUS);
 				if (status == OKAY) {
 					const std::string id = json_msg[ID];// get_key_value(msg, ID);
-					caller->on_user_register_response(true, id);
+					caller->on_message(message_type::user_registeration_res, registration_res{ true, id });
 				}
 				else {
 					assert(status == ERR);
-					caller->on_user_register_response(false, std::string{});
+					caller->on_message(message_type::user_registeration_res, registration_res{ false, std::string{} });
 				}
 			}
 			else if (type == ICE_CANDIDATES_REQ_RES) {
@@ -259,7 +265,9 @@ namespace grt {
 				const std::string prsence_type = notify_msg[TYPE];
 				const std::string id = notify_msg[KEY];
 				const std::string name = notify_msg[NAME];
-				caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);
+				presence_notification const obj{ id, name, to_user_status(prsence_type) };
+				caller->on_message(message_type::presence_notification, obj);
+				//caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);
 			}
 			else if (type == FORWARD_MSG_TYPE_KEY) {
 				//assert(false);
@@ -884,12 +892,12 @@ namespace grt {
 	}
 
 	std::string 
-		make_prsence_notifcation(bool is_connected, std::string id, std::string name) {
+		make_prsence_notifcation(presence_notification notification) {
 
 		const auto m =  json{
-					{TYPE, detail::to_connection_status_str(is_connected)},
-					{KEY, id},
-					{NAME, name}
+					{TYPE, detail::to_string(notification.status_)},
+					{KEY, notification.id_},
+					{NAME, notification.name_}
 					}.dump();
 		return json{
 					{TYPE, PRESENCE_NOTIFICATION},
