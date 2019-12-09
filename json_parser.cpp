@@ -347,6 +347,14 @@ namespace grt {
 				const auto status = detail::is_status_okay(json_msg[STATUS]);
 				caller->on_message(message_type::room_join_res, status);
 			}
+			else if (type == "validate_room_join_res") {
+				const auto status = detail::is_status_okay(json_msg[STATUS]);
+				const std::string ip = json_msg[IP];
+				const std::string port = json_msg[PORT];
+				const std::string roomId = json_msg[ID];
+				const room_join_validate_res r{ status, ip, port,  roomId };
+				caller->on_message(message_type::validate_room_join_res,r);
+			}
 			else if (type == "response_router_capablity") {
 				const auto m = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::router_capablity, m);

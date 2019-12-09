@@ -18,6 +18,11 @@ namespace grt {
 		unknown
 	};
 
+	/*struct account_info {
+		std::user_name_;
+		std::std
+	};*/
+
 	struct login_res {
 		bool status_;
 		std::string ip_;

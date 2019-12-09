@@ -30,6 +30,7 @@ namespace grt {
 		create_room_res,
 		close_room_res,
 		room_join_req,
+		validate_room_join_res,
 		room_open_req,
 		room_join_res,
 		req_room_serv_add,
@@ -110,6 +111,13 @@ namespace grt {
 		bool is_okay_;
 		std::string ip_;
 		std::string port_;
+	};
+
+	struct room_join_validate_res {
+		bool is_okay_;
+		std::string ip_;
+		std::string port_;
+		std::string room_id_;
 	};
 
 	struct room_open_res {
