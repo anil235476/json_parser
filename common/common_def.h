@@ -20,6 +20,7 @@ namespace grt {
 		login_res,
 		login_req,
 		call_req,
+		call_req_native,
 		call_req_res,
 		call_res_evt,
 		signalling_serv_req_res,

@@ -34,6 +34,8 @@ constexpr const char* PEER_ANS{ "answer" };
 constexpr const char* PEER_ICE{ "iceCandidates" };
 constexpr const char* PEER_CALL_REQ{ "call_request" };
 constexpr const char* PEER_CALL_RES{ "call_request_res" };
+constexpr const char* PEER_CALL_REQ_NATIVE{ "call_request_native" };
+
 constexpr const char* AUDIO_CALL{ "audio" };
 constexpr const char* VIDEO_CALL{ "video" };
 constexpr const char* SDP{ "sdp" };
@@ -475,6 +477,9 @@ namespace grt {
 			else if (type == "cam_toggle_req") {
 					const bool on = json_msg[PEER_MSG_KEY];
 					caller->on_message(message_type::cam_toggle, on);
+			}
+			else if (type == PEER_CALL_REQ_NATIVE) {
+				caller->on_message(message_type::call_req_native, json_msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
