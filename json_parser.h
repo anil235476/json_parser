@@ -18,11 +18,6 @@ namespace grt {
 		unknown
 	};
 
-	/*struct account_info {
-		std::user_name_;
-		std::std
-	};*/
-
 	struct login_res {
 		bool status_;
 		std::string ip_;
@@ -88,7 +83,7 @@ namespace grt {
 
 	std::string make_show_hide_msg(bool to_show);
 
-	std::string make_register_user_res(std::string id, bool okay);
+	std::string make_register_user_res(account_info);
 	std::string create_ice_servers_req(std::string id);
 	
 	std::string make_forwarded_message(std::string to, std::string self, std::string msg);

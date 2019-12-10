@@ -62,6 +62,15 @@ namespace grt {
 		invalid
 	};
 
+	struct account_info {
+		std::string  name_;
+		std::string id_;
+		std::string room_id_;
+		std::string error_;// todo: we are not agree on this to have error in account info
+	};
+
+	using registration_res =std::pair<bool, account_info>;
+
 	struct ice_candidates_info {
 		std::string mid_;
 		int mline_index_;
@@ -126,7 +135,7 @@ namespace grt {
 		std::string id_;
 	};
 
-	using registration_res = room_open_res;
+	
 
 
 	struct room_connection_credential {

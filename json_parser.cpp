@@ -60,6 +60,7 @@ constexpr const char* CONNECTION_ERROR{ "connection_error" };
 constexpr const char* CHAT_MSG_TYPE{ "chat_message" };
 constexpr const char* PEER_ID{ "peerId" };
 constexpr const char* PRODUCER_ID{ "producerId" };
+constexpr const char* ROOM_ID{ "roomId" };
 using json = nlohmann::json;
 namespace grt {
 	
@@ -240,14 +241,13 @@ namespace grt {
 			}
 			else if (type == REG_USR_REQ_RES) {
 				const auto status = json_msg[STATUS]; //get_key_value(msg, STATUS);
-				if (status == OKAY) {
-					const std::string id = json_msg[ID];// get_key_value(msg, ID);
-					caller->on_message(message_type::user_registeration_res, registration_res{ true, id });
-				}
-				else {
-					assert(status == ERR);
-					caller->on_message(message_type::user_registeration_res, registration_res{ false, std::string{} });
-				}
+				const std::string id = json_msg[ID];// get_key_value(msg, ID);
+				const std::string userName = json_msg[NAME];
+				const std::string roomId = json_msg[ROOM_ID]; // todo ??
+				const std::string error = json_msg[ERR];
+
+				caller->on_message(message_type::user_registeration_res,
+					registration_res{ status == OKAY, {userName, id, roomId, error} });
 			}
 			else if (type == ICE_CANDIDATES_REQ_RES) {
 				//assert(false);
@@ -807,11 +807,14 @@ namespace grt {
 	}
 
 	std::string 
-		make_register_user_res(std::string id, bool okay) {
+		make_register_user_res(account_info info) {
 		const json j2 = {
 						{TYPE, REG_USR_REQ_RES},
-						{STATUS, (okay ? OKAY : ERR)},
-						{ID, id}
+						{STATUS, (info.error_.empty() ? OKAY : ERR)},
+						{ID, info.id_},
+						{ERR, info.error_},
+						{NAME, info.name_},
+						{ROOM_ID, info.room_id_}
 						};
 		return j2.dump();
 	}
