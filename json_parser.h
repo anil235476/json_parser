@@ -5,6 +5,7 @@
 #include "common/common_def.h" //todo: make proper path for this file
 #include <json.hpp>
 #include "executor/executor.h"
+#include <map>
 
 using json = nlohmann::json;
 constexpr const char* FORWARD_MSG_TYPE_KEY{ "forward_message" };
@@ -44,6 +45,9 @@ namespace grt {
 		virtual void on_message(message_type, absl::any msg){}
 
 	};
+
+	//this is hook which any client can install in library code to get message notifcation.
+	using message_handler_hook = std::map<message_type, std::function<void(absl::any)>>;
 
 	void async_parse_message(std::string msg, parser_callback* caller);
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);
