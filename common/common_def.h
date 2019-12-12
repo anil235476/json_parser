@@ -130,6 +130,12 @@ namespace grt {
 		std::string room_id_;
 	};
 
+	struct room_join_res {
+		bool is_okay;
+		std::string peer_id_;
+		std::string room_id_;
+	};
+
 	struct room_open_res {
 		bool is_okay_;
 		std::string id_;

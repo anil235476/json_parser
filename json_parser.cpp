@@ -347,7 +347,9 @@ namespace grt {
 			}
 			else if (type == "room_join_response") {
 				const auto status = detail::is_status_okay(json_msg[STATUS]);
-				caller->on_message(message_type::room_join_res, status);
+				const std::string id = json_msg[ID];
+				const std::string room_id; //todo: need to send room id from server as well.
+				caller->on_message(message_type::room_join_res, room_join_res{ status, id, room_id });
 			}
 			else if (type == "validate_room_join_res") {
 				const auto status = detail::is_status_okay(json_msg[STATUS]);
@@ -596,10 +598,12 @@ namespace grt {
 	}
 
 	std::string 
-		make_room_join_req_res(const bool status) {
+		make_room_join_req_res(room_join_res res ) {
 		const json j2 = {
 			{TYPE, "room_join_response"},
-		{STATUS, detail::convert_to_success(status)},
+		{STATUS, detail::convert_to_success(res.is_okay)},
+		{ID, res.peer_id_},
+		{ROOM_ID, res.room_id_}
 		};
 		
 		return j2.dump();
@@ -1022,6 +1026,10 @@ namespace grt {
 
 	std::string get_type(std::string const& msg) {
 		return detail::get_type(msg);
+	}
+
+	absl::any get_json_object(std::string const& msg) {
+		return json::parse(msg);
 	}
 
 	//
