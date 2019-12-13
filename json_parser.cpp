@@ -35,7 +35,7 @@ constexpr const char* PEER_ICE{ "iceCandidates" };
 constexpr const char* PEER_CALL_REQ{ "call_request" };
 constexpr const char* PEER_CALL_RES{ "call_request_res" };
 constexpr const char* PEER_CALL_REQ_NATIVE{ "call_request_native" };
-constexpr const char* PEER_CALL_ROOM_RES{ "call_room_request_res" };
+constexpr const char* CALL_NOTIFICATION{ "in_call_notification" };
 
 constexpr const char* AUDIO_CALL{ "audio" };
 constexpr const char* VIDEO_CALL{ "video" };
@@ -222,13 +222,13 @@ namespace grt {
 					remote_id, is_accepted, url, status, id, forwarded_msg }
 				);
 			}
-			else if (type == PEER_CALL_ROOM_RES) {
+			else if (type == CALL_NOTIFICATION) {
 				const std::string status = json_msg[STATUS];
 				const std::string id = json_msg[ID];
 				const std::string roomId = json_msg[ROOM_ID];
-				call_room_res const res = { status , id ,roomId };
+				 const call_response_info res{ "" , id ,status =="connected", roomId, status, "", forwarded_msg };
 				caller->on_message(
-					message_type::call_req_room_res, res);
+					message_type::call_notification, res);
 			}
 			else if (type == CHAT_MSG_TYPE) {
 				const std::string name = json_msg[NAME];
@@ -618,14 +618,6 @@ namespace grt {
 		return j2.dump();
 	}
 
-	std::string create_call_req_native(room_join_res res) {
-		const json j2 = {	
-			{TYPE,"call_request"},			
-			{PEER_ID, res.self_id_},
-			{ROOM_ID, res.room_id_}
-		};
-		return j2.dump();
-	}
 	std::string 
 		create_register_user_req(std::string name) {
 		const json j2 = {
@@ -989,11 +981,17 @@ namespace grt {
 		}.dump();
 	}
 
-	std::string make_validate_room_join(std::string roomId){
-		auto const cmd = json{
+
+	std::string 
+		make_validate_room_join_req(std::string roomId) {
+		return json{
 		   { TYPE, "validate_room_join"},
 		   {ID, roomId}
 		}.dump();
+	}
+
+	std::string 
+		make_room_command(std::string cmd) {
 		return json{
 			{TYPE, "room_request"},
 			{PEER_MSG_KEY, cmd}
@@ -1013,6 +1011,15 @@ namespace grt {
 			{TYPE, CHAT_MSG_TYPE},
 		{PEER_MSG_KEY, msg.msg_},
 		{NAME, msg.sender_name_}
+		}.dump();
+	}
+
+	std::string 
+		make_p2p_call_room_req(std::string roomId, std::string self_id) {
+		return json{
+			{TYPE, PEER_CALL_REQ},
+		{ROOM_ID, roomId},
+		{PEER_ID, self_id}
 		}.dump();
 	}
 

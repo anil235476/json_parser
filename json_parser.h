@@ -57,7 +57,6 @@ namespace grt {
 	absl::any get_json_object(std::string const& msg);
 
 	std::string create_room_create_req(std::string room_name);
-	std::string create_call_req_native(room_join_res res);
 	std::string make_room_create_req_res(bool const status, std::string room_id);
 	std::string make_room_close_req(std::string room_id);
 	std::string make_room_infos_req();
@@ -80,8 +79,8 @@ namespace grt {
 		json const& dtls_parameters);
 
 	std::string make_participant_info_req();
-	std::string make_validate_room_join(std::string roomId);
-
+	std::string make_validate_room_join_req(std::string roomId);
+	std::string make_room_command(std::string cmd);
 	std::string make_render_wnd_req(std::string const id);
 	std::string make_render_wnd_req_res(bool is_ok, std::string class_name, std::string parent_wnd_name, std::string id, std::string sender_id);
 
@@ -112,7 +111,7 @@ namespace grt {
 	std::string make_session_leave_notification();
 	std::string make_json_msg(message_type type, std::string detail);
 	std::string make_json_msg(chat_msg msg);
-
+	std::string make_p2p_call_room_req(std::string roomId, std::string self_id);
 #ifdef ENABLE_UNIT_TETS
 	//only for unit test 
 	namespace detail {

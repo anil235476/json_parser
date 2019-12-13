@@ -20,9 +20,9 @@ namespace grt {
 		login_res,
 		login_req,
 		call_req,
+		call_notification,
 		call_req_native,
 		call_req_res,
-		call_req_room_res,
 		call_res_evt,
 		signalling_serv_req_res,
 		room_info_res,
@@ -141,14 +141,6 @@ namespace grt {
 		bool is_okay_;
 		std::string id_;
 	};
-
-	struct call_room_res {
-		std::string status_;
-		std::string id_;
-		std::string roomId_;
-		std::string json_msg;
-	};
-	
 
 
 	struct room_connection_credential {
