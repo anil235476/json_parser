@@ -22,6 +22,7 @@ namespace grt {
 		call_req,
 		call_req_native,
 		call_req_res,
+		call_req_room_res,
 		call_res_evt,
 		signalling_serv_req_res,
 		room_info_res,
@@ -132,7 +133,7 @@ namespace grt {
 
 	struct room_join_res {
 		bool is_okay;
-		std::string peer_id_;
+		std::string self_id_;
 		std::string room_id_;
 	};
 
@@ -141,6 +142,12 @@ namespace grt {
 		std::string id_;
 	};
 
+	struct call_room_res {
+		std::string status_;
+		std::string id_;
+		std::string roomId_;
+		std::string json_msg;
+	};
 	
 
 

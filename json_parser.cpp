@@ -35,6 +35,7 @@ constexpr const char* PEER_ICE{ "iceCandidates" };
 constexpr const char* PEER_CALL_REQ{ "call_request" };
 constexpr const char* PEER_CALL_RES{ "call_request_res" };
 constexpr const char* PEER_CALL_REQ_NATIVE{ "call_request_native" };
+constexpr const char* PEER_CALL_ROOM_RES{ "call_room_request_res" };
 
 constexpr const char* AUDIO_CALL{ "audio" };
 constexpr const char* VIDEO_CALL{ "video" };
@@ -221,6 +222,14 @@ namespace grt {
 					remote_id, is_accepted, url, status, id, forwarded_msg }
 				);
 			}
+			else if (type == PEER_CALL_ROOM_RES) {
+				const std::string status = json_msg[STATUS];
+				const std::string id = json_msg[ID];
+				const std::string roomId = json_msg[ROOM_ID];
+				call_room_res const res = { status , id ,roomId };
+				caller->on_message(
+					message_type::call_req_room_res, res);
+			}
 			else if (type == CHAT_MSG_TYPE) {
 				const std::string name = json_msg[NAME];
 				const std::string chat = json_msg[PEER_MSG_KEY];
@@ -348,7 +357,7 @@ namespace grt {
 			else if (type == "room_join_response") {
 				const auto status = detail::is_status_okay(json_msg[STATUS]);
 				const std::string id = json_msg[ID];
-				const std::string room_id; //todo: need to send room id from server as well.
+				const std::string room_id = json_msg[ROOM_ID]; //todo: need to send room id from server as well.
 				caller->on_message(message_type::room_join_res, room_join_res{ status, id, room_id });
 			}
 			else if (type == "validate_room_join_res") {
@@ -602,13 +611,21 @@ namespace grt {
 		const json j2 = {
 			{TYPE, "room_join_response"},
 		{STATUS, detail::convert_to_success(res.is_okay)},
-		{ID, res.peer_id_},
+		{ID, res.self_id_},
 		{ROOM_ID, res.room_id_}
 		};
 		
 		return j2.dump();
 	}
 
+	std::string create_call_req_native(room_join_res res) {
+		const json j2 = {	
+			{TYPE,"call_request"},			
+			{PEER_ID, res.self_id_},
+			{ROOM_ID, res.room_id_}
+		};
+		return j2.dump();
+	}
 	std::string 
 		create_register_user_req(std::string name) {
 		const json j2 = {
@@ -969,6 +986,17 @@ namespace grt {
 	std::string make_session_leave_notification() {
 		return json{
 			{TYPE, "notify_session_close"}
+		}.dump();
+	}
+
+	std::string make_validate_room_join(std::string roomId){
+		auto const cmd = json{
+		   { TYPE, "validate_room_join"},
+		   {ID, roomId}
+		}.dump();
+		return json{
+			{TYPE, "room_request"},
+			{PEER_MSG_KEY, cmd}
 		}.dump();
 	}
 
