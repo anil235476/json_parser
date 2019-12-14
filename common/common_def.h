@@ -90,26 +90,13 @@ namespace grt {
 	};
 
 
-	struct call_response_info {
-		std::string detail_;
-		std::string new_id_;
-		bool is_accepted_;
-		std::string url_;
-		std::string status_;
-		std::string from_;
-		std::string json_;
-	};
+	
 
 	struct callee_address {
 		std::string url_;
 		std::string id_;
 	};
 
-	struct call_req_info {
-		call_type type_;
-		std::string sender_id_;
-		std::string json_;
-	};
 	
 	struct call_res_event {
 		call_type type_;

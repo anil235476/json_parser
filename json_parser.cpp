@@ -8,7 +8,7 @@
 constexpr const char* TYPE{ "type" };
 constexpr const char* REG_USR_REQ{ "register_user" };
 constexpr const char* REG_USR_REQ_RES{ "register_user_response" };
-constexpr const char* ID{ "id" };
+
 constexpr const char* STATUS{ "status" };
 constexpr const char* OKAY{ "ok" };
 constexpr const char* OKAY_{ "okay" };
@@ -61,7 +61,7 @@ constexpr const char* CONNECTION_ERROR{ "connection_error" };
 constexpr const char* CHAT_MSG_TYPE{ "chat_message" };
 constexpr const char* PEER_ID{ "peerId" };
 constexpr const char* PRODUCER_ID{ "producerId" };
-constexpr const char* ROOM_ID{ "roomId" };
+
 using json = nlohmann::json;
 namespace grt {
 	
@@ -205,10 +205,12 @@ namespace grt {
 					
 			}
 			else if (type == PEER_CALL_REQ) {
-				const std::string detail = json_msg[ DETAIL];
-				caller->on_message(message_type::call_req,
-					call_req_info{ to_call_type(detail) , id, forwarded_msg });
+				//const std::string detail = json_msg[ DETAIL];
 				//caller->on_call_req(to_call_type(detail), id);
+				const call_type type_= call_type::VIDEO;
+				caller->on_message(message_type::call_req,
+					call_req_info{ type_ , id, json_msg });
+				
 			}
 			else if (type == PEER_CALL_RES) {
 				const std::string detail = json_msg[DETAIL];
@@ -226,7 +228,7 @@ namespace grt {
 				const std::string status = json_msg[STATUS];
 				const std::string id = json_msg[ID];
 				const std::string roomId = json_msg[ROOM_ID];
-				 const call_response_info res{ "" , id ,status =="connected", roomId, status, "", forwarded_msg };
+				 const call_response_info res{ "" , id ,status =="connected", roomId, status, "", json_msg };
 				caller->on_message(
 					message_type::call_notification, res);
 			}
@@ -329,7 +331,8 @@ namespace grt {
 			const bool is_accepted = is_call_accepted(status);
 			const std::string remote_id = json_msg[FROM];
 			const std::string self_id = json_msg[ID];
-			const std::string detail = json_msg[DETAIL];
+			const std::string detail =  VIDEO_CALL;// json_msg[DETAIL];
+
 			caller->on_message(message_type::call_res_evt, 
 				call_res_event{to_call_type(detail),remote_id, self_id, is_accepted });
 
@@ -1019,7 +1022,7 @@ namespace grt {
 		return json{
 			{TYPE, PEER_CALL_REQ},
 		{ROOM_ID, roomId},
-		{PEER_ID, self_id}
+		{ID, self_id}
 		}.dump();
 	}
 
@@ -1042,6 +1045,15 @@ namespace grt {
 			{TYPE, "cam_toggle_req"},
 		{PEER_MSG_KEY, on}
 
+		}.dump();
+	}
+
+	std::string make_call_response(call_response_info info) {
+		return json{
+			{TYPE, CALL_NOTIFICATION},
+		{STATUS, info.is_accepted_?"connected":"disconnected"},
+		{ID, info.new_id_},
+		{ROOM_ID, info.url_}
 		}.dump();
 	}
 

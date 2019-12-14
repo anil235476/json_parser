@@ -10,6 +10,8 @@
 using json = nlohmann::json;
 constexpr const char* FORWARD_MSG_TYPE_KEY{ "forward_message" };
 constexpr const char* ROOM_REQ{ "room_request" };
+constexpr const char* ID{ "id" };
+constexpr const char* ROOM_ID{ "roomId" };
 namespace grt {
 
 	enum class webrtc_message_type {
@@ -18,6 +20,23 @@ namespace grt {
 		ICE_CANDIDATES,
 		unknown
 	};
+
+	struct call_response_info {
+		std::string detail_;
+		std::string new_id_;
+		bool is_accepted_;
+		std::string url_;
+		std::string status_;
+		std::string from_;
+		json json_;
+	};
+
+	struct call_req_info {
+		call_type type_;
+		std::string sender_id_;
+		json json_;
+	};
+
 
 	struct login_res {
 		bool status_;
@@ -112,6 +131,7 @@ namespace grt {
 	std::string make_json_msg(message_type type, std::string detail);
 	std::string make_json_msg(chat_msg msg);
 	std::string make_p2p_call_room_req(std::string roomId, std::string self_id);
+	std::string make_call_response(call_response_info info);
 #ifdef ENABLE_UNIT_TETS
 	//only for unit test 
 	namespace detail {
