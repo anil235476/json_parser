@@ -178,6 +178,11 @@ namespace grt {
 		std::string producer_id_;
 	};
 
+	struct produce_res{
+		std::string producer_id_;
+		std::string message_res_id_;
+	};
+
 }//namespace grt
 
 #endif//__COMMON_DEF_H__

@@ -61,6 +61,8 @@ constexpr const char* CONNECTION_ERROR{ "connection_error" };
 constexpr const char* CHAT_MSG_TYPE{ "chat_message" };
 constexpr const char* PEER_ID{ "peerId" };
 constexpr const char* PRODUCER_ID{ "producerId" };
+constexpr const char* REQ_ID{ "reqId" };
+constexpr const char* RES_ID{ "resId" };
 
 using json = nlohmann::json;
 namespace grt {
@@ -382,8 +384,9 @@ namespace grt {
 				caller->on_message(message_type::producer_transport_res, m);
 			}
 			else if (type == "responseProduce") {
-			const auto id_j = json_msg[PEER_MSG_KEY];
-			caller->on_message(message_type::produce_res, id_j);
+			const std::string producerId = json_msg[PEER_MSG_KEY];
+			const std::string res_id = json_msg[RES_ID];
+				caller->on_message(message_type::produce_res, produce_res{ producerId,res_id });
 
 			}
 			else if (type == "responseCreateConsumerTransport") {
@@ -696,10 +699,11 @@ namespace grt {
 
 	std::string 
 		make_produce_transport_req(std::string const transport_id, std::string kind,
-			json const& rtp_parameters) {
+			json const& rtp_parameters, std::string reqId) {
 		const json j2 = {
 			{TYPE, "produce"},
-			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters)}
+			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters)},
+			{REQ_ID, reqId}
 		};
 		return j2.dump();
 	}
@@ -728,10 +732,11 @@ namespace grt {
 		return j2.dump();
 	}
 
-	std::string make_consume_req(std::string peer_id, json const& rtc_capablity) {
+	std::string make_consume_req(std::string peer_id, std::string producer_id, json const& rtc_capablity) {
 		const json j2 = {
 			{TYPE, "consume"},
 		{ID, peer_id},
+		{PRODUCER_ID, producer_id},
 		{PEER_MSG_KEY, make_consume_req_msg(rtc_capablity)}
 		};
 		return j2.dump();
