@@ -176,6 +176,7 @@ namespace grt {
 	struct producer_info {
 		std::string peer_id_;
 		std::string producer_id_;
+		std::string kind_;
 	};
 
 	struct produce_res{

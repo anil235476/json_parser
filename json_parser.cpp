@@ -63,6 +63,7 @@ constexpr const char* PEER_ID{ "peerId" };
 constexpr const char* PRODUCER_ID{ "producerId" };
 constexpr const char* REQ_ID{ "reqId" };
 constexpr const char* RES_ID{ "resId" };
+constexpr const char* KIND{ "kind" };
 
 using json = nlohmann::json;
 namespace grt {
@@ -395,7 +396,7 @@ namespace grt {
 			}
 			else if (type == "peer_add") {
 				const std::string id = json_msg[PEER_MSG_KEY];
-				const std::string name = "todo";// json_msg[NAME]; it is getting ailed.
+				const std::string name = "todo"; //json_msg[NAME]; todo: find out why this is not coming 
 				caller->on_message(message_type::peer_add, peer_info{ id, name });
 			}
 			else if (type == "producer_add") {
@@ -407,7 +408,8 @@ namespace grt {
 			else if (type == "producer_close") {
 				const std::string peerId = json_msg[PEER_ID];
 				const std::string producerId = json_msg[PRODUCER_ID];
-				caller->on_message(message_type::producer_close, producer_info{ peerId, producerId });
+				const std::string kind = json_msg[KIND];
+				caller->on_message(message_type::producer_close, producer_info{ peerId, producerId, kind });
 			}
 			else if (type == "responseConsumer") {
 				const auto m = json_msg[PEER_MSG_KEY];
