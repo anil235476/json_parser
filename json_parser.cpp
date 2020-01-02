@@ -396,7 +396,7 @@ namespace grt {
 			}
 			else if (type == "peer_add") {
 				const std::string id = json_msg[PEER_MSG_KEY];
-				const std::string name = "todo"; //json_msg[NAME]; todo: find out why this is not coming 
+				const std::string name = json_msg[NAME]; 
 				caller->on_message(message_type::peer_add, peer_info{ id, name });
 			}
 			else if (type == "producer_add") {
