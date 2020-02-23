@@ -30,3 +30,5 @@ target_sources(json_parser PRIVATE
 ${ABSL_PATH}/absl/types/bad_any_cast.cc
 )
 
+target_link_libraries(json_parser PRIVATE utility)
+
