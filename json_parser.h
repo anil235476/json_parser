@@ -2,6 +2,7 @@
 #define _JSON_PARSER_H__
 #include <string>
 #include <absl/types/any.h>
+#include <absl/types/optional.h>
 #include "common/common_def.h" //todo: make proper path for this file
 #include <json.hpp>
 #include "executor/executor.h"
@@ -47,8 +48,7 @@ namespace grt {
 	struct login_req {
 		std::string usr_;
 		std::string pwd_;
-		std::string ip_;
-		std::string port_;
+		std::string server_;
 	};
 
 	class parser_callback {
@@ -61,7 +61,7 @@ namespace grt {
 			std::string id, absl::any msg, std::string detail){}
 
 		virtual void on_signalling_url(std::string ip, std::string port){}
-		virtual void on_message(message_type, absl::any msg){}
+		virtual void on_message(message_type, absl::any msg, absl::optional<absl::any> unparsed_msg = absl::nullopt){}
 
 	};
 

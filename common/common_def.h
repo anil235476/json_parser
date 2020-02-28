@@ -68,6 +68,7 @@ namespace grt {
 		std::string id_;
 		std::string room_id_;
 		std::string error_;// todo: we are not agree on this to have error in account info
+		bool is_admin_;
 	};
 
 	using registration_res =std::pair<bool, account_info>;

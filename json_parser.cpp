@@ -259,9 +259,10 @@ namespace grt {
 				const std::string userName = json_msg[NAME];
 				const std::string roomId = json_msg[ROOM_ID]; // todo ??
 				const std::string error = json_msg[ERR];
+				const bool is_admin = json_msg["admin"];
 
 				caller->on_message(message_type::user_registeration_res,
-					registration_res{ status == OKAY, {userName, id, roomId, error} });
+					registration_res{ status == OKAY, {userName, id, roomId, error} }, msg);
 			}
 			else if (type == ICE_CANDIDATES_REQ_RES) {
 				//assert(false);
@@ -320,12 +321,13 @@ namespace grt {
 			}
 			else if (type == LOGIN_REQ) {
 				//assert(false);
-				const std::string ip = json_msg[IP];// get_key_value(msg, IP);
-				const std::string usr = json_msg[USR];
-				const std::string pwd = json_msg[PWD];
-				const std::string port = json_msg[PORT];
+				const auto m = json_msg[PEER_MSG_KEY];
+
+				const std::string server = m["server"];// get_key_value(msg, IP);
+				const std::string usr = m["user"];
+				const std::string pwd = m[PWD];
 				caller->on_message(message_type::login_req,
-					login_req{ usr, pwd, ip, port });
+					login_req{ usr, pwd, server });
 			}
 			else if (type == CALL_RES_EVNT) {
 				//assert(false);
@@ -968,8 +970,9 @@ namespace grt {
 		//return std::string{ "/login_req?" } +"user=" + user_name + "&pwd=" + pwd;
 		return json{
 			{TYPE, "login_req"},
-			{"user", user_name},
-			{"pwd", pwd}
+			{PEER_MSG_KEY, json{{"user", user_name}, {"pwd",pwd}}}
+			/*{"user", user_name},
+			{"pwd", pwd}*/
 		}.dump();
 	}
 
