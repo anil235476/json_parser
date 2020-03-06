@@ -36,6 +36,7 @@ constexpr const char* PEER_CALL_REQ{ "call_request" };
 constexpr const char* PEER_CALL_RES{ "call_request_res" };
 constexpr const char* PEER_CALL_REQ_NATIVE{ "call_request_native" };
 constexpr const char* CALL_NOTIFICATION{ "in_call_notification" };
+constexpr const char* RES_OWNER_ROOM{ "response_owner_rooms" };
 
 constexpr const char* AUDIO_CALL{ "audio" };
 constexpr const char* VIDEO_CALL{ "video" };
@@ -501,6 +502,9 @@ namespace grt {
 			}
 			else if (type == PEER_CALL_REQ_NATIVE) {
 				caller->on_message(message_type::call_req_native, json_msg);
+			}
+			else if (type == RES_OWNER_ROOM) {
+				caller->on_message(message_type::res_owner_room_list, json_msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";

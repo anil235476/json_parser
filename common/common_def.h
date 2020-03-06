@@ -60,7 +60,9 @@ namespace grt {
 		producer_add,
 		producer_close,
 		presence_notification,
-		invalid
+		res_owner_room_list,
+		invalid,
+		
 	};
 
 	struct account_info {
