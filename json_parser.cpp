@@ -361,7 +361,7 @@ namespace grt {
 			else if (type == "room_close_response") {
 				const std::string status = json_msg[STATUS];
 				//assert(detail::is_status_okay(status));
-				caller->on_message(message_type::close_room_res, status);
+				caller->on_message(message_type::close_room_res, status, msg  );
 			}
 			else if (type == "room_join_response") {
 				const auto status = detail::is_status_okay(json_msg[STATUS]);
