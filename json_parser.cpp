@@ -506,6 +506,9 @@ namespace grt {
 			else if (type == RES_OWNER_ROOM) {
 				caller->on_message(message_type::res_owner_room_list, json_msg);
 			}
+			else if (type == "active_speaker_list") {
+				std::cout << "todo: active speaker list\n";
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
@@ -696,21 +699,22 @@ namespace grt {
 	static
 		auto
 		get_produce_trasport_msg(std::string const transport_id, std::string kind,
-			json const& rtp_parameters) {
+			json const& rtp_parameters, json const& appData) {
 		const json j2 = {
 			{"transportId", transport_id},
 			{"kind", kind},
-			{"rtpParameters", rtp_parameters}
+			{"rtpParameters", rtp_parameters},
+			{"appData", appData}
 		};
 		return j2; //.dump();
 	}
 
 	std::string 
 		make_produce_transport_req(std::string const transport_id, std::string kind,
-			json const& rtp_parameters, std::string reqId) {
+			json const& rtp_parameters, std::string reqId, json const& appData) {
 		const json j2 = {
 			{TYPE, "produce"},
-			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters)},
+			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters, appData)},
 			{REQ_ID, reqId}
 		};
 		return j2.dump();
