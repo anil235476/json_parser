@@ -177,74 +177,6 @@ namespace grt {
 			return output;
 		}
 
-		void _parse_forwarded(std::string id, std::string forwarded_msg, parser_callback* caller) {
-			assert(caller);
-			const auto json_msg = json::parse(forwarded_msg);
-			const std::string type = json_msg[TYPE];//detail::get_type(forwarded_msg);
-			if (type == PEER_OFFER || type == PEER_ANS || type == PEER_ICE) {
-				auto to_webrtc_signalling_msg = [](const std::string type)->webrtc_message_type {
-					if (type == PEER_OFFER) return webrtc_message_type::OFFER;
-					if (type == PEER_ANS) return webrtc_message_type::ANSWER;
-					if (type == PEER_ICE) return webrtc_message_type::ICE_CANDIDATES;
-					assert(false);
-					return webrtc_message_type::unknown;
-				};
-				const auto msg_type = to_webrtc_signalling_msg(type);
-				const std::string offer = json_msg[PEER_MSG_KEY];
-				const std::string detail = json_msg[DETAIL];
-				
-				const auto joffer = json::parse(offer);
-				if (type == PEER_ICE) {
-					//const std::string mid_index = joffer[MINDEX];
-					const int mline_index = joffer[MINDEX];//std::stoi(mid_index);
-					const std::string mid = joffer[MID];
-					const std::string sdp = joffer[CANDIDATE_SDP];
-					const ice_candidates_info info{ mid, mline_index, sdp };
-					caller->on_webrtc_signalling_msg(msg_type, id, info, detail);
-				}
-				else {
-					const std::string sdp = joffer[SDP];
-					caller->on_webrtc_signalling_msg(msg_type, id, sdp, detail);
-				}
-					
-			}
-			else if (type == PEER_CALL_REQ) {
-				//const std::string detail = json_msg[ DETAIL];
-				//caller->on_call_req(to_call_type(detail), id);
-				const call_type type_= call_type::VIDEO;
-				caller->on_message(message_type::call_req,
-					call_req_info{ type_ , id, json_msg });
-				
-			}
-			else if (type == PEER_CALL_RES) {
-				const std::string detail = json_msg[DETAIL];
-				const std::string status = json_msg[STATUS];
-				const auto is_accepted = is_call_accepted(status);
-				const std::string remote_id = json_msg[ID];
-				const std::string url = json_msg[ URL];
-				caller->on_message(
-					message_type::call_req_res,
-					call_response_info{ detail, 
-					remote_id, is_accepted, url, status, id, forwarded_msg }
-				);
-			}
-			else if (type == CALL_NOTIFICATION) {
-				const std::string status = json_msg[STATUS];
-				const std::string id = json_msg[ID];
-				const std::string roomId = json_msg[ROOM_ID];
-				 const call_response_info res{ "" , id ,status =="connected", roomId, status, "", json_msg };
-				caller->on_message(
-					message_type::call_notification, res);
-			}
-			else if (type == CHAT_MSG_TYPE) {
-				const std::string name = json_msg[NAME];
-				const std::string chat = json_msg[PEER_MSG_KEY];
-				caller->on_message(message_type::chat_msg, 
-					chat_msg{id, name, chat}
-				);
-			}
-		}
-
 		void _parse(std::string msg, parser_callback* caller) {
 			assert(caller);
 			const auto json_msg = json::parse(msg);
@@ -288,10 +220,7 @@ namespace grt {
 				//caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);
 			}
 			else if (type == FORWARD_MSG_TYPE_KEY) {
-				//assert(false);
-				const std::string from = json_msg[FROM];
-				const std::string forwarded_msg = json_msg[PEER_MSG_KEY];
-				_parse_forwarded(from, forwarded_msg, caller);
+				caller->on_message(message_type::forward_message, msg);
 			}
 			else if (type == SIGNALLING_SERVER_URL) {
 				//assert(false);
