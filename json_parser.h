@@ -66,7 +66,7 @@ namespace grt {
 	};
 
 	//this is hook which any client can install in library code to get message notifcation.
-	using message_handler_hook = std::map<message_type, std::function<void(absl::any)>>;
+	using message_handler_hook = std::map<message_type, std::function<void(absl::any, absl::optional<absl::any> unparsed_msg)>>;
 
 	void async_parse_message(std::string msg, parser_callback* caller);
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);

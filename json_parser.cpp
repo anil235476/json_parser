@@ -329,7 +329,7 @@ namespace grt {
 			else if (type == "peer_add") {
 				const std::string id = json_msg[PEER_MSG_KEY];
 				const std::string name = json_msg[NAME]; 
-				caller->on_message(message_type::peer_add, peer_info{ id, name });
+				caller->on_message(message_type::peer_add, peer_info{ id, name }, msg);
 			}
 			else if (type == "producer_add") {
 				const std::string peerId = json_msg[PEER_ID];
@@ -411,7 +411,7 @@ namespace grt {
 			}
 			else if (type == "peer_remove") {
 				const std::string id = json_msg[PEER_MSG_KEY];
-				caller->on_message(message_type::peer_remove, id);
+				caller->on_message(message_type::peer_remove, id, msg);
 				//todo : handle this case.
 			}
 			else if (type == "session_leave_req") {
