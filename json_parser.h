@@ -45,6 +45,18 @@ namespace grt {
 		std::string port_;
 	};
 
+	enum class connection_status {
+		connected,
+		error,
+		closed,
+		none
+	};
+
+	struct connection_res {
+		connection_status status_;
+		std::string info_;
+	};
+
 	struct login_req {
 		std::string usr_;
 		std::string pwd_;
