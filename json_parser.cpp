@@ -391,7 +391,7 @@ namespace grt {
 				const std::string child_wnd = json_msg["child_wnd"];
 				const std::string id = json_msg[ID];
 				grt::wnd_create_res const res{ status, class_name , parent_wnd, child_wnd, id };
-				caller->on_message(message_type::window_create_res, res);
+				caller->on_message(message_type::window_create_res, res, msg);
 			}
 			else if (type == "wnd_close_req") {
 				const std::string id = json_msg[PEER_MSG_KEY];
@@ -401,7 +401,7 @@ namespace grt {
 				const bool status = json_msg[STATUS];
 				const std::string id = json_msg[ID];
 
-				caller->on_message(message_type::wnd_close_req_res, std::make_pair(status, id));
+				caller->on_message(message_type::wnd_close_req_res, std::make_pair(status, id), msg);
 			}
 			else if(type == "wnd_show_hide") {
 			const std::string m = json_msg[PEER_MSG_KEY];
@@ -415,19 +415,19 @@ namespace grt {
 				//todo : handle this case.
 			}
 			else if (type == "session_leave_req") {
-				caller->on_message(message_type::session_leave_req, "");
+				caller->on_message(message_type::session_leave_req, "", msg);
 			}
 			else if (type == CONNECTION_ERROR) {
 				const std::string m = json_msg[PEER_MSG_KEY];
-				caller->on_message(message_type::connection_error, m);
+				caller->on_message(message_type::connection_error, m, msg);
 			}
 			else if (type == "mic_toggle_req") {
 				const bool on = json_msg[PEER_MSG_KEY];
-				caller->on_message(message_type::mic_toggle, on);
+				caller->on_message(message_type::mic_toggle, on, msg);
 			}
 			else if (type == "cam_toggle_req") {
 					const bool on = json_msg[PEER_MSG_KEY];
-					caller->on_message(message_type::cam_toggle, on);
+					caller->on_message(message_type::cam_toggle, on, msg);
 			}
 			else if (type == PEER_CALL_REQ_NATIVE) {
 				caller->on_message(message_type::call_req_native, json_msg);
