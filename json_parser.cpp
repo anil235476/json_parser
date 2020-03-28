@@ -438,6 +438,10 @@ namespace grt {
 			else if (type == "active_speaker_list") {
 				std::cout << "todo: active speaker list\n";
 			}
+			else if (type == "self_view") {
+				const std::string cmd = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::self_view_req, cmd);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");

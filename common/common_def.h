@@ -61,6 +61,7 @@ namespace grt {
 		producer_close,
 		presence_notification,
 		res_owner_room_list,
+		self_view_req,
 		invalid,
 		
 	};
