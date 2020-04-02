@@ -1020,6 +1020,14 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_producer_close_notification(std::string producerId, std::string kind) {
+		return json{
+			{TYPE, "producer_close"},
+		{ID,producerId},
+		{KIND, kind}
+		}.dump();
+	}
+
 	void async_parse_message(std::string msg, parser_callback* caller) {
 
 		std::thread{

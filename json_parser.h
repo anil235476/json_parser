@@ -144,6 +144,7 @@ namespace grt {
 	std::string make_json_msg(chat_msg msg);
 	std::string make_p2p_call_room_req(std::string roomId, std::string self_id);
 	std::string make_call_response(call_response_info info);
+	std::string make_producer_close_notification(std::string producerId, std::string kind);
 #ifdef ENABLE_UNIT_TETS
 	//only for unit test 
 	namespace detail {
