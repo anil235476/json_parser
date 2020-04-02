@@ -429,6 +429,10 @@ namespace grt {
 					const bool on = json_msg[PEER_MSG_KEY];
 					caller->on_message(message_type::cam_toggle, on, msg);
 			}
+			else if (type == "share_toggle_req") {
+			const bool on = json_msg[PEER_MSG_KEY];
+			caller->on_message(message_type::share_toggle, on, msg);
+			}
 			else if (type == PEER_CALL_REQ_NATIVE) {
 				caller->on_message(message_type::call_req_native, json_msg);
 			}
@@ -995,6 +999,14 @@ namespace grt {
 		return json{
 			{TYPE, "cam_toggle_req"},
 		{PEER_MSG_KEY, on}
+
+		}.dump();
+	}
+
+	std::string make_share_toggle_req(bool on) {
+		return json{
+		{TYPE, "share_toggle_req"},
+			{PEER_MSG_KEY, on}
 
 		}.dump();
 	}

@@ -153,6 +153,7 @@ namespace grt {
 #endif//
 	std::string make_mic_toggle_req(bool on);
 	std::string make_camera_toggle_req(bool on);
+	std::string make_share_toggle_req(bool on);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

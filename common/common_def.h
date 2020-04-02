@@ -57,6 +57,7 @@ namespace grt {
 		chat_msg,
 		mic_toggle,
 		cam_toggle,
+		share_toggle,
 		producer_add,
 		producer_close,
 		presence_notification,
