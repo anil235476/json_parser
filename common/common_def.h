@@ -138,6 +138,7 @@ namespace grt {
 		bool is_prority_;
 		bool is_active_;
 		std::string id_;
+		std::string name_;
 	};
 
 	struct room_connection_credential {

@@ -70,13 +70,14 @@ using json = nlohmann::json;
 namespace grt {
 
 		void to_json(json& j, const window_info& p) {
-			j = json{ {"id", p.id_}, {"prioirty", p.is_prority_}, {"active", p.is_active_} };
+			j = json{ {"id", p.id_}, {"prioirty", p.is_prority_}, {"active", p.is_active_}, {"name", p.name_} };
 		}
 
 		void from_json(const json& j, window_info& p) {
 			j.at("id").get_to(p.id_);
 			j.at("prioirty").get_to(p.is_prority_);
 			j.at("active").get_to(p.is_active_);
+			j.at("name").get_to(p.name_);
 		}
 	
 	namespace detail {
