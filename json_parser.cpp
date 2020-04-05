@@ -451,7 +451,16 @@ namespace grt {
 				caller->on_message(message_type::res_owner_room_list, json_msg);
 			}
 			else if (type == "active_speaker_list") {
-				std::cout << "todo: active speaker list\n";
+				const auto& list = json_msg[PEER_MSG_KEY];
+				std::vector<peer_info> ret;
+				for (const auto& i : list) {
+					ret.push_back(peer_info{ i[ID], i[NAME] });
+				}
+				caller->on_message(message_type::active_speaker, ret, msg);
+			}
+			else if (type == "update_wnd_info") {
+				const window_info m = json_msg[PEER_MSG_KEY].get<window_info>();
+				caller->on_message(message_type::wnd_update_notification, m, msg);
 			}
 			else if (type == "self_view") {
 				const std::string cmd = json_msg[PEER_MSG_KEY];
@@ -1020,6 +1029,14 @@ namespace grt {
 		{TYPE, "share_toggle_req"},
 			{PEER_MSG_KEY, on}
 
+		}.dump();
+	}
+
+	std::string make_window_info_update_msg(window_info info) {
+		json const m = info;
+		return json{
+			{TYPE, "update_wnd_info"},
+		{PEER_MSG_KEY, m}
 		}.dump();
 	}
 

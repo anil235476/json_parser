@@ -52,6 +52,7 @@ namespace grt {
 		wnd_close_req,
 		wnd_close_req_res,
 		wnd_show_hide,
+		wnd_update_notification,
 		session_leave_req,
 		connection_error,
 		chat_msg,
@@ -62,6 +63,7 @@ namespace grt {
 		producer_close,
 		presence_notification,
 		res_owner_room_list,
+		active_speaker,
 		self_view_req,
 		invalid,
 		
