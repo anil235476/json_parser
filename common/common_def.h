@@ -134,6 +134,11 @@ namespace grt {
 		std::string id_;
 	};
 
+	struct window_info{
+		bool is_prority_;
+		bool is_active_;
+		std::string id_;
+	};
 
 	struct room_connection_credential {
 		std::string ip_;

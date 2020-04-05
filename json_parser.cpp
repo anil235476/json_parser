@@ -68,6 +68,16 @@ constexpr const char* KIND{ "kind" };
 
 using json = nlohmann::json;
 namespace grt {
+
+		void to_json(json& j, const window_info& p) {
+			j = json{ {"id", p.id_}, {"prioirty", p.is_prority_}, {"active", p.is_active_} };
+		}
+
+		void from_json(const json& j, window_info& p) {
+			j.at("id").get_to(p.id_);
+			j.at("prioirty").get_to(p.is_prority_);
+			j.at("active").get_to(p.is_active_);
+		}
 	
 	namespace detail {
 
@@ -381,7 +391,7 @@ namespace grt {
 				caller->on_message(message_type::room_serv_res, m);
 			}
 			else if (type == "create_wnd_req") {
-			const std::string m = json_msg[PEER_MSG_KEY];
+			const window_info m = json_msg[PEER_MSG_KEY].get<window_info>();
 			caller->on_message(message_type::wnd_create_req, m);
 			}
 			else if (type == "create_wnd_req_res") {
@@ -754,10 +764,11 @@ namespace grt {
 		return j2.dump();
 	}
 
-	std::string make_render_wnd_req(std::string const id) {
+	std::string make_render_wnd_req(window_info info) {
+		json m = info;
 		const json j2 = {
 			{TYPE, "create_wnd_req"},
-			{PEER_MSG_KEY, id}
+			{PEER_MSG_KEY, m}
 		};
 		return j2.dump();
 	}
