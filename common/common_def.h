@@ -66,6 +66,7 @@ namespace grt {
 		active_speaker,
 		self_view_req,
 		exit,
+		logout,
 		invalid,
 		
 	};

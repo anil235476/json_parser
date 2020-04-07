@@ -470,6 +470,9 @@ namespace grt {
 				const std::string cmd = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::self_view_req, cmd);
 			}
+			else if (type == "logout") {
+				caller->on_message(message_type::logout, "", msg);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
