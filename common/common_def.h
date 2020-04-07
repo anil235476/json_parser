@@ -65,6 +65,7 @@ namespace grt {
 		res_owner_room_list,
 		active_speaker,
 		self_view_req,
+		exit,
 		invalid,
 		
 	};

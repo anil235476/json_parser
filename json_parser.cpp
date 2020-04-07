@@ -462,6 +462,10 @@ namespace grt {
 				const window_info m = json_msg[PEER_MSG_KEY].get<window_info>();
 				caller->on_message(message_type::wnd_update_notification, m, msg);
 			}
+			else if (type == "exit_msg") {
+				const std::string m = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::exit, m, msg);
+			}
 			else if (type == "self_view") {
 				const std::string cmd = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::self_view_req, cmd);
@@ -1037,6 +1041,13 @@ namespace grt {
 		return json{
 			{TYPE, "update_wnd_info"},
 		{PEER_MSG_KEY, m}
+		}.dump();
+	}
+
+	std::string make_exit_msg(std::string msg) {
+		return json{
+			{TYPE, "exit_msg"},
+			{PEER_MSG_KEY, msg}
 		}.dump();
 	}
 
