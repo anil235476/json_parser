@@ -67,6 +67,7 @@ namespace grt {
 		self_view_req,
 		exit,
 		logout,
+		ui_close_open,
 		invalid,
 		
 	};

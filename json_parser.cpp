@@ -473,6 +473,10 @@ namespace grt {
 			else if (type == "logout") {
 				caller->on_message(message_type::logout, "", msg);
 			}
+			else if (type == "ui_close_open") {
+				const bool on = json_msg[PEER_MSG_KEY];;
+				caller->on_message(message_type::ui_close_open, on, msg);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
@@ -1052,6 +1056,13 @@ namespace grt {
 			{TYPE, "exit_msg"},
 			{PEER_MSG_KEY, msg}
 		}.dump();
+	}
+
+	std::string make_ui_close_open(bool on) {
+		return json{
+				{TYPE, "ui_close_open"},
+				{PEER_MSG_KEY, on}
+				}.dump();
 	}
 
 	std::string make_call_response(call_response_info info) {

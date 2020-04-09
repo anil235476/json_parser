@@ -157,6 +157,7 @@ namespace grt {
 	std::string make_share_toggle_req(bool on);
 	std::string make_window_info_update_msg(window_info info);
 	std::string make_exit_msg(std::string msg);
+	std::string make_ui_close_open(bool on);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
