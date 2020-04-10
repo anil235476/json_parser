@@ -1065,6 +1065,14 @@ namespace grt {
 				}.dump();
 	}
 
+	std::string make_peer_add_msg(std::string id, std::string name) {
+		return json{
+			{TYPE, "peer_add"},
+			{PEER_MSG_KEY, id},
+			{NAME, name}
+		}.dump();
+	}
+
 	std::string make_call_response(call_response_info info) {
 		return json{
 			{TYPE, CALL_NOTIFICATION},
