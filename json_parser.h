@@ -82,6 +82,7 @@ namespace grt {
 
 	void async_parse_message(std::string msg, parser_callback* caller);
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);
+	void parse_message(std::string msg, parser_callback* caller);
 
 	std::string get_type(std::string const& msg);
 

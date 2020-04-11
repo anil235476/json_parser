@@ -417,7 +417,7 @@ namespace grt {
 			else if(type == "wnd_show_hide") {
 			const std::string m = json_msg[PEER_MSG_KEY];
 			//bool const to_show =  (m == "show");
-			caller->on_message(message_type::wnd_show_hide, m == "show");
+			caller->on_message(message_type::wnd_show_rendering, m == "show");
 			
 			}
 			else if (type == "peer_remove") {
@@ -475,7 +475,7 @@ namespace grt {
 			}
 			else if (type == "ui_close_open") {
 				const bool on = json_msg[PEER_MSG_KEY];;
-				caller->on_message(message_type::ui_close_open, on, msg);
+				caller->on_message(message_type::ui_right_pan_open, on, msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
@@ -1102,6 +1102,10 @@ namespace grt {
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller) {
 		auto f = util::make_task(&detail::_parse, msg, caller);
 		executor->submit(f);
+	}
+
+	void parse_message(std::string msg, parser_callback* caller) {
+		detail::_parse(msg, caller);
 	}
 
 	std::string get_type(std::string const& msg) {
