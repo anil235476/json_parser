@@ -253,9 +253,8 @@ namespace grt {
 			else if (type == LOGIN_RES) {
 				std::cout << "login response receviced\n";
 				const std::string status = json_msg[STATUS];
-				assert(is_status_okay(status));
-				const std::string ip = json_msg[IP];
-				const std::string port = json_msg[PORT];
+				const std::string ip = json_msg.value(IP, std::string{});
+				const std::string port = json_msg.value(PORT, std::string{});
 				caller->on_message(message_type::login_res,
 					login_res{ is_status_okay(status), ip, port });
 				//assert(false);
