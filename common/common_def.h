@@ -35,6 +35,7 @@ namespace grt {
 		validate_room_join_res,
 		room_open_req,
 		room_join_res,
+	    room_join_state,
 		req_room_serv_add,
 		req_room_info,
 		res_rooms_info,
