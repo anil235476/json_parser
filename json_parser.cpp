@@ -227,8 +227,7 @@ namespace grt {
 				const std::string id = notify_msg[KEY];
 				const std::string name = notify_msg[NAME];
 				presence_notification const obj{ id, name, to_user_status(prsence_type) };
-				caller->on_message(message_type::presence_notification, obj);
-				//caller->on_prsence_notification(is_connected_msg(prsence_type), id, name);
+				caller->on_message(message_type::presence_notification, obj, msg);
 			}
 			else if (type == FORWARD_MSG_TYPE_KEY) {
 				caller->on_message(message_type::forward_message, msg);
