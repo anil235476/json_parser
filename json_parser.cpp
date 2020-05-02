@@ -225,7 +225,7 @@ namespace grt {
 				const auto notify_msg = json::parse(peer_msg);
 				const std::string prsence_type = notify_msg[TYPE];
 				const std::string id = notify_msg[KEY];
-				const std::string name = notify_msg[NAME];
+				const std::string name = notify_msg.value(NAME, std::string{});
 				presence_notification const obj{ id, name, to_user_status(prsence_type) };
 				caller->on_message(message_type::presence_notification, obj, msg);
 			}
