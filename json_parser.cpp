@@ -412,11 +412,14 @@ namespace grt {
 
 				caller->on_message(message_type::wnd_close_req_res, std::make_pair(status, id), msg);
 			}
-			else if(type == "wnd_show_hide") {
-			const std::string m = json_msg[PEER_MSG_KEY];
-			//bool const to_show =  (m == "show");
-			caller->on_message(message_type::wnd_show_rendering, m == "show");
-			
+			else if (type == "show_self_view_layout") {
+				caller->on_message(message_type::show_self_view_layout, "");
+			}
+			else if (type == "show_conference_view_layout") {
+				caller->on_message(message_type::show_conference_layout, "");
+			}
+			else if (type == "show_ui_view_layout") {
+			caller->on_message(message_type::show_ui_layout, "");
 			}
 			else if (type == "peer_remove") {
 				const std::string id = json_msg[PEER_MSG_KEY];
@@ -474,6 +477,10 @@ namespace grt {
 			else if (type == "ui_close_open") {
 				const bool on = json_msg[PEER_MSG_KEY];;
 				caller->on_message(message_type::ui_right_pan_open, on, msg);
+			}
+			else if (type == "participant_close_open") {
+				const bool on = json_msg[PEER_MSG_KEY];;
+				caller->on_message(message_type::ui_left_pan_open, on, msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
@@ -783,6 +790,19 @@ namespace grt {
 		return j2.dump();
 	}
 
+
+	std::string make_self_view_layout() noexcept {
+		return json{ {TYPE, "show_self_view_layout"}, }.dump();
+	}
+
+	std::string make_conference_view_layout() noexcept {
+		return json{ {TYPE, "show_conference_view_layout"} }.dump();
+	}
+
+	std::string make_ui_view_layout() noexcept {
+		return json{ {TYPE, "show_ui_view_layout"} }.dump();
+	}
+
 	std::string make_render_wnd_req(window_info info) {
 		json m = info;
 		const json j2 = {
@@ -1071,6 +1091,12 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_participant_open_close(bool on) {
+		return json{
+				{TYPE, "participant_close_open"},
+				{PEER_MSG_KEY, on}
+		}.dump();
+	}
 	std::string make_call_response(call_response_info info) {
 		return json{
 			{TYPE, CALL_NOTIFICATION},

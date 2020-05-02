@@ -119,7 +119,9 @@ namespace grt {
 	std::string make_render_wnd_close_req(std::string const id);
 	std::string make_render_wnd_close_res(bool is_ok, std::string const id);
 
-	std::string make_show_hide_msg(bool to_show);
+	std::string make_self_view_layout() noexcept;
+	std::string make_conference_view_layout() noexcept;
+	std::string make_ui_view_layout() noexcept;
 
 	std::string make_register_user_res(account_info);
 	std::string create_ice_servers_req(std::string id);
@@ -160,6 +162,7 @@ namespace grt {
 	std::string make_exit_msg(std::string msg);
 	std::string make_ui_close_open(bool on);
 	std::string make_peer_add_msg(std::string id, std::string name);
+	std::string make_participant_open_close(bool on);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

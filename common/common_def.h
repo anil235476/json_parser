@@ -52,7 +52,9 @@ namespace grt {
 		window_create_res,
 		wnd_close_req,
 		wnd_close_req_res,
-		wnd_show_rendering,
+		show_self_view_layout,
+		show_conference_layout,
+		show_ui_layout,
 		wnd_update_notification,
 		session_leave_req,
 		connection_error,
@@ -69,6 +71,7 @@ namespace grt {
 		exit,
 		logout,
 		ui_right_pan_open,
+		ui_left_pan_open,
 		invalid,
 		
 	};
