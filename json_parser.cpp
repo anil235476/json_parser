@@ -194,8 +194,8 @@ namespace grt {
 			const auto type = json_msg[TYPE];
 			if (type == REG_USR_REQ) {
 				//assert(false);
-				const std::string name = json_msg[NAME];
-				caller->on_message(message_type::user_registration_req, name);
+				//const std::string name = json_msg[NAME];
+				caller->on_message(message_type::user_registration_req, "", msg);
 			}
 			else if (type == REG_USR_REQ_RES) {
 				const auto status = json_msg[STATUS]; //get_key_value(msg, STATUS);
@@ -232,12 +232,12 @@ namespace grt {
 			else if (type == FORWARD_MSG_TYPE_KEY) {
 				caller->on_message(message_type::forward_message, msg);
 			}
-			else if (type == SIGNALLING_SERVER_URL) {
-				//assert(false);
-				const std::string ip = json_msg[IP];
-				const std::string port = json_msg[PORT];
-				caller->on_signalling_url(ip, port);
-			}
+			//else if (type == SIGNALLING_SERVER_URL) {
+			//	//assert(false);
+			//	const std::string ip = json_msg[IP];
+			//	const std::string port = json_msg[PORT];
+			//	caller->on_signalling_url(ip, port);
+			//}
 			else if (type == CREATE_CONNECTION) {
 				//assert(false);
 				const  std::string id = json_msg[ID];// get_key_value(msg, ID);
@@ -254,8 +254,9 @@ namespace grt {
 				const std::string status = json_msg[STATUS];
 				const std::string ip = json_msg.value(IP, std::string{});
 				const std::string port = json_msg.value(PORT, std::string{});
+				const std::string id = json_msg.value(ID, std::string{});
 				caller->on_message(message_type::login_res,
-					login_res{ is_status_okay(status), ip, port });
+					login_res{ is_status_okay(status), ip, port, id });
 				//assert(false);
 			}
 			else if (type == LOGIN_REQ) {
@@ -920,10 +921,11 @@ namespace grt {
 	}
 
 	std::string 
-		make_connection_status(bool is_okay) {
+		make_connection_status(bool is_okay, std::string id) {
 		return json{
 						{TYPE, CON_STATUS},
-						{STATUS, detail::to_connection_status_str(is_okay)}
+						{STATUS, detail::to_connection_status_str(is_okay)},
+						{ID,id}
 					}.dump();
 	}
 

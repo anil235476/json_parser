@@ -43,6 +43,7 @@ namespace grt {
 		bool status_;
 		std::string ip_;
 		std::string port_;
+		std::string id_;
 	};
 
 	enum class connection_status {
@@ -72,7 +73,6 @@ namespace grt {
 		virtual void on_webrtc_signalling_msg(webrtc_message_type type, 
 			std::string id, absl::any msg, std::string detail){}
 
-		virtual void on_signalling_url(std::string ip, std::string port){}
 		virtual void on_message(message_type, absl::any msg, absl::optional<absl::any> unparsed_msg = absl::nullopt){}
 
 	};
@@ -133,7 +133,7 @@ namespace grt {
 	std::string create_call_req(call_type type);
 
 	std::string create_call_req_res(call_type type, bool is_accept, std::string ip, std::string port, std::string id);
-	std::string make_connection_status(bool is_okay);
+	std::string make_connection_status(bool is_okay, std::string id);
 	std::string make_prsence_notifcation(presence_notification);
 	std::string make_show_message(std::string message, std::string id);
 	struct ice_candidates_info; //forward declaration
