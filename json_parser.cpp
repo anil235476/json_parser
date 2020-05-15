@@ -531,9 +531,11 @@ namespace grt {
 	}
 
 	std::string 
-		make_room_join_req() {
+		make_room_join_req(std::string roomId, std::string user_name) {
 		const json j2 = {
-			{TYPE, "request_room_join"}
+			{TYPE, "request_room_join"},
+		{ROOM_ID, roomId},
+		{NAME, user_name}
 		};
 		return j2.dump();
 	}

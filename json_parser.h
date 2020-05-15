@@ -92,7 +92,7 @@ namespace grt {
 	std::string make_room_create_req_res(bool const status, std::string room_id);
 	std::string make_room_close_req(std::string room_id);
 	std::string make_room_infos_req();
-	std::string make_room_join_req();
+	std::string make_room_join_req(std::string roomId, std::string user_name);
 	std::string make_room_leave_req(std::string room_id);
 	std::string make_room_serv_res(signaling_server_req_res res);
 	std::string convert_to_json(bool success, std::vector<room_info> const&);
