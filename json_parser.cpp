@@ -675,11 +675,12 @@ namespace grt {
 	static
 		auto
 		get_produce_trasport_msg(std::string const transport_id, std::string kind,
-			json const& rtp_parameters, json const& appData) {
+			json const& rtp_parameters, json const& sctpStreamParameters, json const& appData) {
 		const json j2 = {
 			{"transportId", transport_id},
 			{"kind", kind},
 			{"rtpParameters", rtp_parameters},
+			{"sctpStreamParameters", sctpStreamParameters},
 			{"appData", appData}
 		};
 		return j2; //.dump();
@@ -687,10 +688,11 @@ namespace grt {
 
 	std::string 
 		make_produce_transport_req(std::string const transport_id, std::string kind,
-			json const& rtp_parameters, std::string reqId, json const& appData) {
+			json const& rtp_parameters, json const& sctpStreamParameters, std::string reqId,
+			json const& appData) {
 		const json j2 = {
 			{TYPE, "produce"},
-			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters, appData)},
+			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters, sctpStreamParameters, appData)},
 			{REQ_ID, reqId}
 		};
 		return j2.dump();
