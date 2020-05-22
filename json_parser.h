@@ -89,6 +89,8 @@ namespace grt {
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);
 	void parse_message(std::string msg, parser_callback* caller);
 
+	absl::optional<chat_msg> parse_conference_chat_msg(std::string const& msg);
+
 	std::string get_type(std::string const& msg);
 
 	absl::any get_json_object(std::string const& msg);
@@ -150,6 +152,7 @@ namespace grt {
 	std::string make_session_leave_notification();
 	std::string make_json_msg(message_type type, std::string detail);
 	std::string make_json_msg(chat_msg msg);
+	std::string make_chat_msg_for_ui(chat_msg msg);//todo: this function to be removed in future.
 	std::string make_p2p_call_room_req(std::string roomId, std::string self_id);
 	std::string make_call_response(call_response_info info);
 	std::string make_producer_close_notification(std::string producerId, std::string kind);

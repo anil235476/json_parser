@@ -1028,6 +1028,15 @@ namespace grt {
 		}.dump();
 	}
 
+	std::string make_chat_msg_for_ui(chat_msg msg) {
+		return json{
+		{TYPE, "chat_msg_native"},
+	{PEER_MSG_KEY, msg.msg_},
+	{NAME, msg.sender_name_}
+		}.dump();
+	}
+
+
 	std::string 
 		make_p2p_call_room_req(std::string roomId, std::string self_id) {
 		return json{
@@ -1150,6 +1159,20 @@ namespace grt {
 	void parse_message(std::string msg, parser_callback* caller) {
 		detail::_parse(msg, caller);
 	}
+
+	absl::optional<chat_msg> parse_conference_chat_msg(std::string const& msg) {
+		const auto json_msg = json::parse(msg);
+		const auto from = json_msg.value("from", std::string{});
+		if (from.empty())
+			return absl::optional<chat_msg>{};
+		const auto chat = json_msg.value("msg", std::string{});
+		if(chat.empty())
+			return absl::optional<chat_msg>{};
+
+
+		return chat_msg{ "",from, chat };
+
+    }
 
 	std::string get_type(std::string const& msg) {
 		return detail::get_type(msg);
