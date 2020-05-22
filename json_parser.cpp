@@ -483,6 +483,10 @@ namespace grt {
 				const bool on = json_msg[PEER_MSG_KEY];;
 				caller->on_message(message_type::ui_left_pan_open, on, msg);
 			}
+			else if (type == "send_room_chat") {
+			std::string const chat_json = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::send_room_chat, chat_json, msg);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
