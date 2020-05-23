@@ -1123,12 +1123,12 @@ namespace grt {
 	{PEER_MSG_KEY, info}
 	}.dump();
 }
+
 	std::string make_chat_open_close(bool on) {
 		return json{
 				{TYPE, "chat_close_open"},
 				{PEER_MSG_KEY, on}
 				}.dump();
-
 	}
 
 	std::string make_call_response(call_response_info info) {
