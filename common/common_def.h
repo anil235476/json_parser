@@ -72,6 +72,7 @@ namespace grt {
 		logout,
 		ui_right_pan_open,
 		ui_left_pan_open,
+		chat_ui_open_close,
 		send_room_chat,
 		invalid,
 		
