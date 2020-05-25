@@ -64,6 +64,11 @@ namespace grt {
 		std::string server_;
 	};
 
+	struct consumer_info {
+		std::string id_;
+		int preferrred_layer_;
+	};
+
 	class parser_callback {
 	public:
 		virtual ~parser_callback(){}
@@ -163,6 +168,7 @@ namespace grt {
 	std::string make_ui_close_open(bool on);
 	std::string make_peer_add_msg(std::string id, std::string name);
 	std::string make_participant_open_close(bool on);
+	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

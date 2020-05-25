@@ -1101,6 +1101,19 @@ namespace grt {
 				{PEER_MSG_KEY, on}
 		}.dump();
 	}
+
+	std::string 
+		make_consumers_with_preferred_layers(std::vector<consumer_info> const& list) {
+		json info;
+		for (const consumer_info& v : list) {
+			info.push_back(json{ {"consumerId", v.id_}, {"Preferredlayer", v.preferrred_layer_} });
+		}
+		return json{
+			{TYPE, "consumer_list_with_preferred_layers"},
+		{PEER_MSG_KEY, info}
+		}.dump();
+	}
+
 	std::string make_call_response(call_response_info info) {
 		return json{
 			{TYPE, CALL_NOTIFICATION},
