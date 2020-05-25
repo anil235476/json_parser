@@ -172,6 +172,7 @@ namespace grt {
 	std::string make_participant_open_close(bool on);
 	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
 	std::string make_chat_open_close(bool on);
+	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
