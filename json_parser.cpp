@@ -1036,15 +1036,6 @@ namespace grt {
 		}.dump();
 	}
 
-	std::string make_chat_msg_for_ui(chat_msg msg) {
-		return json{
-		{TYPE, "chat_msg_native"},
-	{PEER_MSG_KEY, msg.msg_},
-	{NAME, msg.sender_name_}
-		}.dump();
-	}
-
-
 	std::string 
 		make_p2p_call_room_req(std::string roomId, std::string self_id) {
 		return json{
