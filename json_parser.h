@@ -89,6 +89,8 @@ namespace grt {
 	void async_parse_message(util::executor* executor, std::string msg, parser_callback* caller);
 	void parse_message(std::string msg, parser_callback* caller);
 
+	absl::optional<chat_msg> parse_conference_chat_msg(std::string const& msg);
+
 	std::string get_type(std::string const& msg);
 
 	absl::any get_json_object(std::string const& msg);
@@ -107,7 +109,7 @@ namespace grt {
 	std::string make_producer_transport_creation_req(bool force_tcp, json const& rtpCapablity);
 	std::string make_producer_transport_connect_req(std::string const transport_id, json const& dtls_parameter);
 	std::string make_produce_transport_req(std::string const transport_id, std::string kind,
-		json const& rtp_parameters, std::string reqId,  json const& appData= json::object());
+		json const& rtp_parameters, json const& sctpStreamParameters, std::string reqId,  json const& appData= json::object());
 
 	std::string make_consumer_transport_creation_req(bool force_tcp);
 	std::string make_consume_req(std::string peer_id, std::string producer_id, json const& rtc_capablity);
@@ -169,6 +171,7 @@ namespace grt {
 	std::string make_peer_add_msg(std::string id, std::string name);
 	std::string make_participant_open_close(bool on);
 	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
+	std::string make_chat_open_close(bool on);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__

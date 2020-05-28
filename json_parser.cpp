@@ -483,6 +483,14 @@ namespace grt {
 				const bool on = json_msg[PEER_MSG_KEY];;
 				caller->on_message(message_type::ui_left_pan_open, on, msg);
 			}
+			else if (type == "chat_close_open") {
+				const bool on = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::chat_ui_open_close, on, msg);
+			}
+			else if (type == "send_room_chat") {
+			std::string const chat_json = json_msg[PEER_MSG_KEY];
+				caller->on_message(message_type::send_room_chat, chat_json, msg);
+			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
 				caller->on_error(msg, "not supported msg");
@@ -675,11 +683,12 @@ namespace grt {
 	static
 		auto
 		get_produce_trasport_msg(std::string const transport_id, std::string kind,
-			json const& rtp_parameters, json const& appData) {
+			json const& rtp_parameters, json const& sctpStreamParameters, json const& appData) {
 		const json j2 = {
 			{"transportId", transport_id},
 			{"kind", kind},
 			{"rtpParameters", rtp_parameters},
+			{"sctpStreamParameters", sctpStreamParameters},
 			{"appData", appData}
 		};
 		return j2; //.dump();
@@ -687,10 +696,11 @@ namespace grt {
 
 	std::string 
 		make_produce_transport_req(std::string const transport_id, std::string kind,
-			json const& rtp_parameters, std::string reqId, json const& appData) {
+			json const& rtp_parameters, json const& sctpStreamParameters, std::string reqId,
+			json const& appData) {
 		const json j2 = {
 			{TYPE, "produce"},
-			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters, appData)},
+			{PEER_MSG_KEY, get_produce_trasport_msg(transport_id, kind, rtp_parameters, sctpStreamParameters, appData)},
 			{REQ_ID, reqId}
 		};
 		return j2.dump();
@@ -1103,15 +1113,22 @@ namespace grt {
 	}
 
 	std::string 
-		make_consumers_with_preferred_layers(std::vector<consumer_info> const& list) {
-		json info;
-		for (const consumer_info& v : list) {
-			info.push_back(json{ {"consumerId", v.id_}, {"Preferredlayer", v.preferrred_layer_} });
-		}
+	make_consumers_with_preferred_layers(std::vector<consumer_info> const& list) {
+	json info;
+	for (const consumer_info& v : list) {
+		info.push_back(json{ {"consumerId", v.id_}, {"Preferredlayer", v.preferrred_layer_} });
+	}
+	return json{
+		{TYPE, "consumer_list_with_preferred_layers"},
+	{PEER_MSG_KEY, info}
+	}.dump();
+}
+	std::string make_chat_open_close(bool on) {
 		return json{
-			{TYPE, "consumer_list_with_preferred_layers"},
-		{PEER_MSG_KEY, info}
-		}.dump();
+				{TYPE, "chat_close_open"},
+				{PEER_MSG_KEY, on}
+				}.dump();
+
 	}
 
 	std::string make_call_response(call_response_info info) {
@@ -1148,6 +1165,20 @@ namespace grt {
 	void parse_message(std::string msg, parser_callback* caller) {
 		detail::_parse(msg, caller);
 	}
+
+	absl::optional<chat_msg> parse_conference_chat_msg(std::string const& msg) {
+		const auto json_msg = json::parse(msg);
+		const auto from = json_msg.value("from", std::string{});
+		if (from.empty())
+			return absl::optional<chat_msg>{};
+		const auto chat = json_msg.value("msg", std::string{});
+		if(chat.empty())
+			return absl::optional<chat_msg>{};
+
+
+		return chat_msg{ "",from, chat };
+
+    }
 
 	std::string get_type(std::string const& msg) {
 		return detail::get_type(msg);
