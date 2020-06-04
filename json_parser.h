@@ -173,6 +173,28 @@ namespace grt {
 	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
 	std::string make_chat_open_close(bool on);
 	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
+
+	//button handler messages and data structure
+	struct renderer_button_status {
+		absl::optional<bool> mic_on_;
+		absl::optional<bool> cam_on_;
+		absl::optional<bool> chat_on_;
+		absl::optional<bool> pariticpant_on_;
+	};
+
+	enum class button_msg_type {
+		button_click,
+		button_status,
+		invalid,
+	};
+
+	struct button_handler_message {
+		button_msg_type type;
+		absl::any msg;
+	};
+	std::string make_button_click_msg(int id);
+	std::string make_button_status_msg(renderer_button_status status);
+	button_handler_message parse_button_handler_msg(std::string const& msg);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
