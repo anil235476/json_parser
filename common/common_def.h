@@ -74,6 +74,7 @@ namespace grt {
 		ui_left_pan_open,
 		chat_ui_open_close,
 		send_room_chat,
+		conference_button_status,
 		invalid,
 		
 	};

@@ -182,6 +182,17 @@ namespace grt {
 		absl::optional<bool> pariticpant_on_;
 	};
 
+	struct conference_button_status_msg : renderer_button_status {
+		std::string from;
+		conference_button_status_msg& operator =(const renderer_button_status& other) {
+			mic_on_ = other.mic_on_;
+			cam_on_ = other.cam_on_;
+			chat_on_ = other.chat_on_;
+			pariticpant_on_ = other.pariticpant_on_;
+			return *this;
+		}
+	};
+
 	enum class button_msg_type {
 		button_click,
 		button_status,
@@ -194,7 +205,9 @@ namespace grt {
 	};
 	std::string make_button_click_msg(int id);
 	std::string make_button_status_msg(renderer_button_status status);
+	std::string make_conference_button_status_msg(conference_button_status_msg status);
 	button_handler_message parse_button_handler_msg(std::string const& msg);
+	conference_button_status_msg parse_confernce_controller_msg(std::string const& msg);
 }//namespace grt
 
 #endif//_JSON_PARSER_H__
