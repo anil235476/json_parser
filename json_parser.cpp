@@ -79,6 +79,100 @@ namespace grt {
 			j.at("active").get_to(p.is_active_);
 			j.at("name").get_to(p.name_);
 		}
+
+		//namespace {
+		//buttons message status parser
+
+		//constants
+		constexpr const char* CAM = "cam";
+		constexpr const char* MIC = "mic";
+		constexpr const char* CHAT_ON = "chat_on";
+		constexpr const char* PARTICIPANT_ON = "participant_on";
+		constexpr const char* BUTTON_CLICK = "button_click";
+		constexpr const char* BUTTON_STATUS = "button_status";
+
+		void to_json(json& j, const renderer_button_status& p) {
+			j = json::object();
+			if (p.cam_on_.has_value()) {
+				j.push_back({ CAM,p.cam_on_.value() });
+			}
+			if (p.mic_on_.has_value()) {
+				j.push_back({ MIC, p.mic_on_.value() });
+			}
+
+			if (p.chat_on_.has_value()) {
+				j.push_back({ CHAT_ON, p.chat_on_.value() });
+			}
+
+			if (p.pariticpant_on_.has_value()) {
+				j.push_back({ PARTICIPANT_ON, p.pariticpant_on_.value() });
+			}
+
+		}
+
+		void from_json(const json& j, renderer_button_status& p) {
+			if (j.find(CAM) != j.end()) p.cam_on_ = j[CAM];
+			if (j.find(MIC) != j.end()) p.mic_on_ = j[MIC];
+			if (j.find(CHAT_ON) != j.end()) p.chat_on_ = j[CHAT_ON];
+			if (j.find(PARTICIPANT_ON) != j.end()) p.pariticpant_on_ = j[PARTICIPANT_ON];
+		}
+
+
+		//}//namespace
+
+		std::string make_button_click_msg(int id) {
+			return json{
+				{TYPE, BUTTON_CLICK},
+				{PEER_MSG_KEY, id}
+			}.dump();
+		}
+		std::string make_button_status_msg(renderer_button_status status) {
+			json m = status;
+			return json{
+				{TYPE, BUTTON_STATUS},
+			{PEER_MSG_KEY, m}
+			}.dump();
+		}
+
+		button_handler_message parse_button_handler_msg(std::string const& msg) {
+			const auto json_msg = json::parse(msg);
+			const auto type = json_msg[TYPE];
+			if (type == BUTTON_CLICK) {
+				const int id = json_msg[PEER_MSG_KEY];
+				return button_handler_message{ button_msg_type::button_click,id };
+			}
+			else if (type == BUTTON_STATUS) {
+				const renderer_button_status m = json_msg[PEER_MSG_KEY].get<renderer_button_status>();
+				return button_handler_message{ button_msg_type::button_status,m };
+			}
+			assert(false);
+			return { button_msg_type::button_status , absl::any{} };
+		}
+
+		std::string make_conference_button_status_msg(conference_button_status_msg status) {
+			renderer_button_status render_status = status;
+			json m = render_status;
+			m.push_back({ TYPE, "controler_status" });
+			m.push_back({ FROM, status.from });
+
+			return m.dump();
+		}
+
+		conference_button_status_msg _parse_confernce_controller_jmsg(json const& json_msg) {
+			const std::string from = json_msg[FROM];
+			conference_button_status_msg status{};
+			status.from = from;
+			const renderer_button_status rendering_status = json_msg.get<renderer_button_status>();
+			status = rendering_status;
+
+			return status;
+		}
+
+		conference_button_status_msg parse_confernce_controller_msg(std::string const& msg) {
+			const auto json_msg = json::parse(msg);
+			return _parse_confernce_controller_jmsg(json_msg);
+		}
+
 	
 	namespace detail {
 
@@ -490,6 +584,10 @@ namespace grt {
 			else if (type == "send_room_chat") {
 			std::string const chat_json = json_msg[PEER_MSG_KEY];
 				caller->on_message(message_type::send_room_chat, chat_json, msg);
+			}
+			else if (type == "controler_status") {
+				conference_button_status_msg status =  _parse_confernce_controller_jmsg(json_msg);	
+				caller->on_message(message_type::conference_button_status, status, msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";
@@ -1188,5 +1286,7 @@ namespace grt {
 		return json::parse(msg);
 	}
 
+
+	
 	//
 }//namespace grt
