@@ -404,7 +404,7 @@ namespace grt {
 				const auto status = json_msg[STATUS];
 				assert(detail::is_status_okay(status));
 				const std::string id = json_msg[ID];
-				caller->on_message(message_type::create_room_res, id);
+				caller->on_message(message_type::create_room_res, id, msg);
 			}
 			else if (type == "room_close_response") {
 				const std::string status = json_msg[STATUS];
@@ -603,6 +603,9 @@ namespace grt {
 			else if (type == "controler_status") {
 				conference_button_status_msg status =  _parse_confernce_controller_jmsg(json_msg);	
 				caller->on_message(message_type::conference_button_status, status, msg);
+			}
+			else if (type == "generate_url_response") {
+			caller->on_message(message_type::room_url_res, "", msg);
 			}
 			else {
 				std::cout << "not supported msg = " << msg << "\n";

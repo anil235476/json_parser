@@ -76,6 +76,7 @@ namespace grt {
 		send_room_chat,
 		conference_button_status,
 		conference_status, //todo: both seems to same.
+		room_url_res,
 		invalid,
 		
 	};

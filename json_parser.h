@@ -11,6 +11,7 @@
 using json = nlohmann::json;
 constexpr const char* FORWARD_MSG_TYPE_KEY{ "forward_message" };
 constexpr const char* ROOM_REQ{ "room_request" };
+constexpr const char* ROOM_URL_GEN_REQ{ "generate_room_url" };
 constexpr const char* ID{ "id" };
 constexpr const char* ROOM_ID{ "roomId" };
 namespace grt {
