@@ -175,11 +175,25 @@ namespace grt {
 	std::string make_consumers_with_preferred_layers(std::vector<consumer_info> const& list);
 
 	//button handler messages and data structure
+	struct conference_status {
+		absl::optional<bool> sharing_enabled_;
+	};
+
 	struct renderer_button_status {
 		absl::optional<bool> mic_on_;
 		absl::optional<bool> cam_on_;
 		absl::optional<bool> chat_on_;
 		absl::optional<bool> pariticpant_on_;
+		absl::optional<std::string> share_; // on/off/disabled/enabled
+		renderer_button_status& operator =(const conference_status& status) {
+			if (status.sharing_enabled_.has_value()) {
+				//if sharing is happening in conference , then 
+				//button status should be disabled.
+				const std::string share = status.sharing_enabled_.value() ? "disable" : "enable";
+				this->share_ = share;
+			}
+			return *this;
+		}
 	};
 
 	struct conference_button_status_msg : renderer_button_status {
@@ -189,6 +203,7 @@ namespace grt {
 			cam_on_ = other.cam_on_;
 			chat_on_ = other.chat_on_;
 			pariticpant_on_ = other.pariticpant_on_;
+			share_ = other.share_;
 			return *this;
 		}
 	};
@@ -205,6 +220,7 @@ namespace grt {
 	};
 	std::string make_button_click_msg(int id);
 	std::string make_button_status_msg(renderer_button_status status);
+	std::string make_button_status_msg(conference_status status);
 	std::string make_conference_button_status_msg(conference_button_status_msg status);
 	button_handler_message parse_button_handler_msg(std::string const& msg);
 	conference_button_status_msg parse_confernce_controller_msg(std::string const& msg);

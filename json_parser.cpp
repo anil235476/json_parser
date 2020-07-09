@@ -88,6 +88,7 @@ namespace grt {
 		constexpr const char* MIC = "mic";
 		constexpr const char* CHAT_ON = "chat_on";
 		constexpr const char* PARTICIPANT_ON = "participant_on";
+		constexpr const char* SHARE = "share";
 		constexpr const char* BUTTON_CLICK = "button_click";
 		constexpr const char* BUTTON_STATUS = "button_status";
 
@@ -108,6 +109,10 @@ namespace grt {
 				j.push_back({ PARTICIPANT_ON, p.pariticpant_on_.value() });
 			}
 
+			if (p.share_.has_value()) {
+				j.push_back({ SHARE, p.share_.value() });
+			}
+
 		}
 
 		void from_json(const json& j, renderer_button_status& p) {
@@ -115,6 +120,10 @@ namespace grt {
 			if (j.find(MIC) != j.end()) p.mic_on_ = j[MIC];
 			if (j.find(CHAT_ON) != j.end()) p.chat_on_ = j[CHAT_ON];
 			if (j.find(PARTICIPANT_ON) != j.end()) p.pariticpant_on_ = j[PARTICIPANT_ON];
+			if (j.find(SHARE) != j.end()) {
+				const std::string share = j[SHARE];
+				p.share_ = share;
+			}
 		}
 
 
@@ -132,6 +141,12 @@ namespace grt {
 				{TYPE, BUTTON_STATUS},
 			{PEER_MSG_KEY, m}
 			}.dump();
+		}
+
+		std::string make_button_status_msg(conference_status status) {
+			renderer_button_status button_status;
+			button_status = status;
+			return make_button_status_msg(button_status);
 		}
 
 		button_handler_message parse_button_handler_msg(std::string const& msg) {
